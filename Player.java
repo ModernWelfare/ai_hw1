@@ -2,41 +2,49 @@
  * 
  */
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.InputStream;
+import java.util.Scanner;
 
 /**
  * @author tnarayan
  * 
  */
 public class Player {
-	public static int getMove() {
-		return 1;
+	public static String getMove() {
+		return "0 1";
+	}
+
+	public static String convertStreamToString(InputStream is) {
+		java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
+		return s.hasNext() ? s.next() : "";
 	}
 
 	public static void main(String args[]) throws Exception {
-		int width, height, numToWin, playerNumber, timeLimit, move;
 
-		// use BufferedReader for easy reading
-		BufferedReader input = new BufferedReader(new InputStreamReader(
-				System.in));
+		int width, height, numToWin, playerNumber, timeLimit;
+
+		Scanner input = new Scanner(System.in);
+
+		String move;
 
 		// send player name
 		System.out.println("random-player");
-		System.out.flush();
 
 		// read game configuration
-		String[] gameConfig = input.readLine().split(" ");
+		String gameConfigString = input.nextLine();
+		String[] gameConfig = gameConfigString.split(" ");
 		height = Integer.parseInt(gameConfig[0]);
 		width = Integer.parseInt(gameConfig[1]);
 		numToWin = Integer.parseInt(gameConfig[2]);
 		playerNumber = Integer.parseInt(gameConfig[3]);
 		timeLimit = Integer.parseInt(gameConfig[4]);
 
-		int currentTurn = 1; // first player starts
-		int myTurn = (playerNumber == 1) ? 1 : 0;
+		boolean myTurn = false;
+
+		myTurn = (playerNumber == 1) ? true : false;
+
 		while (true) {
-			if (currentTurn == myTurn) {
+			if (myTurn) {
 				// TODO: use a mechanism for timeout(threads, java.util.Timer,
 				// ..)
 
@@ -44,19 +52,21 @@ public class Player {
 				move = getMove();
 
 				// send move
-				System.out.println(String.valueOf(move));
-				System.out.flush();
+				System.out.println("0 1");
 			} else {
 				// read move
-				move = Integer.parseInt(input.readLine());
+				move = input.nextLine();
+
+				String[] move_param = move.split(" ");
 
 				// check for end
-				if (move < 0)
+				if (Integer.parseInt(move_param[0]) < 0) {
 					break;
+				}
 			}
 
 			// switch turns
-			currentTurn = 1 - currentTurn;
+			myTurn = !myTurn;
 		}
 	}
 }
