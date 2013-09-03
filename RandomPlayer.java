@@ -26,12 +26,6 @@ public class RandomPlayer {
 				System.out.println("opponent lost!");
 			}
 
-			// TODO: use a mechanism for timeout(threads, java.util.Timer,
-			// ..)
-
-			// call alpha-beta algorithm to get the move
-
-			// send move
 			move = us.getMove(gameBoard);
 			// print the move to be read by the adversary
 			try {
@@ -55,11 +49,13 @@ public class RandomPlayer {
 			gameBoard = new Board(height, width, numToWin);
 			// gameBoard.printBoard();
 
-			us = new Player(ourPlayerNumber, timeLimit);
-			// player number is either 1 or 2
-			adversary = new Player(3 - ourPlayerNumber, timeLimit);
+			boolean isMax = (ourPlayerNumber == firstPlayerNumber);
 
-			if (ourPlayerNumber == firstPlayerNumber) {
+			us = new Player(ourPlayerNumber, timeLimit, isMax);
+			// player number is either 1 or 2
+			adversary = new Player(3 - ourPlayerNumber, timeLimit, !isMax);
+
+			if (isMax) {
 				// send move
 				move = us.getMove(gameBoard);
 				// print the move to be read by the adversary
@@ -89,7 +85,8 @@ public class RandomPlayer {
 			try {
 				rp.processInput();
 			} catch (Connect4Exception e) {
-
+				// Just admit defeat
+				e.getMessage();
 			}
 		}
 	}

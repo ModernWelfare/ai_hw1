@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 /**
- * @author tnarayan, bli
+ * @author bli
  * 
  */
 public class Connector {
@@ -44,11 +44,11 @@ public class Connector {
 		gameBoard = new Board(height, width, numToWin);
 		// gameBoard.printBoard();
 
-		us = new Player(playerNumber, timeLimit);
-		// player number is either 1 or 2
-		adversary = new Player(3 - playerNumber, timeLimit);
-
 		myTurn = (playerNumber == 1) ? true : false;
+
+		us = new Player(playerNumber, timeLimit, myTurn);
+		// player number is either 1 or 2
+		adversary = new Player(3 - playerNumber, timeLimit, !myTurn);
 
 		while (true) {
 			if (myTurn) {

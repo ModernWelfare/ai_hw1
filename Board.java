@@ -8,9 +8,9 @@
  */
 public class Board {
 
-	int width;
-	int height;
-	int board[][];
+	public int width;
+	public int height;
+	public int board[][];
 	int numOfDiscsInColumn[];
 	int emptyCell = 9;
 	int N;
@@ -29,6 +29,20 @@ public class Board {
 		numOfDiscsInColumn = new int[this.width];
 
 		this.N = N;
+	}
+
+	public Board getDuplicate() {
+		Board newBoard = new Board(height, width, N);
+		for (int i = 0; i < height; i++) {
+			for (int j = 0; j < width; j++) {
+				newBoard.board[i][j] = this.board[i][j];
+			}
+		}
+
+		for (int i = 0; i < width; i++) {
+			newBoard.numOfDiscsInColumn[i] = this.numOfDiscsInColumn[i];
+		}
+		return newBoard;
 	}
 
 	public void printBoard() {
