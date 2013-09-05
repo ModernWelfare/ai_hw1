@@ -254,6 +254,22 @@ public class Player {
 		else 
 			return ourScore - opponentScore;
 	}
+	
+	public int evaluateBoardUsingCentreOfMass(Board gameBoard, int NConnections, int playerNum, int proposedMove){
+		int width = gameBoard.width; //for connect4, this is 7
+		int centre = Math.floor(width / 2) + 1; //for connect4, this is 4
+		return centre - Math.abs(proposedMove - centre);
+		/*for connect4:
+		 * columns -> weight
+		 * 1 -> 1
+		 * 2 -> 2
+		 * 3 -> 3
+		 * 4 -> 4
+		 * 5 -> 3
+		 * 6 -> 2
+		 * 7 -> 1
+		 */
+	}
 
 	/**
 	 * Function for the player to make a move based on a string
