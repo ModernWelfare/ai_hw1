@@ -12,8 +12,8 @@ public class PlayerTest {
 
 	@Before
 	public void setup() {
-		b = new Board(3, 3, 3);
-		us = new Player(1, 10, true);
+		b = new Board(6, 7, 3);
+		us = new Player(1, 10);
 	}
 
 	/**
@@ -41,9 +41,10 @@ public class PlayerTest {
 	 * */
 	@Test
 	public void testMinimax() {
-		us.minimax(b, true, 1);
-		System.out.println(us.moveToTake);
-		assertTrue(us.minimax(b, true, 1) == 1);
+		us.minimax(b);
+		System.out.println(us.minimax(b).moveValue);
+		System.out.println(us.minimax(b).moveString);
+		assertTrue(us.minimax(b).moveValue == 1);
 	}
 
 	// /**

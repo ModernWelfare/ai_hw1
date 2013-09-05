@@ -46,9 +46,9 @@ public class Connector {
 
 		myTurn = (playerNumber == 1) ? true : false;
 
-		us = new Player(playerNumber, timeLimit, myTurn);
+		us = new Player(playerNumber, timeLimit);
 		// player number is either 1 or 2
-		adversary = new Player(3 - playerNumber, timeLimit, !myTurn);
+		adversary = new Player(3 - playerNumber, timeLimit);
 
 		while (true) {
 			if (myTurn) {

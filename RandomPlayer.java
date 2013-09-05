@@ -51,9 +51,9 @@ public class RandomPlayer {
 
 			boolean isMax = (ourPlayerNumber == firstPlayerNumber);
 
-			us = new Player(ourPlayerNumber, timeLimit, isMax);
+			us = new Player(ourPlayerNumber, timeLimit);
 			// player number is either 1 or 2
-			adversary = new Player(3 - ourPlayerNumber, timeLimit, !isMax);
+			adversary = new Player(3 - ourPlayerNumber, timeLimit);
 
 			if (isMax) {
 				// send move
