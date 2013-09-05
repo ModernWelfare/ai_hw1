@@ -255,6 +255,11 @@ public class Player {
 			return ourScore - opponentScore;
 	}
 	
+	/**
+	 * Another heuristic: determines preferability of a particular move (drop in move)
+	 * using centre of board as reference point - the closer the move to the centre column,
+	 * the higher the preference
+	 */
 	public int evaluateBoardUsingCentreOfMass(Board gameBoard, int NConnections, int playerNum, int proposedMove){
 		int width = gameBoard.width; //for connect4, this is 7
 		int centre = Math.floor(width / 2) + 1; //for connect4, this is 4
