@@ -12,7 +12,7 @@ public class PlayerTest {
 
 	@Before
 	public void setup() {
-		b = new Board(6, 7, 3);
+		b = new Board(4, 4, 3);
 		us = new Player(1, 10);
 	}
 

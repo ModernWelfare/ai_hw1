@@ -30,7 +30,8 @@ public class Player {
 	 * @return a string representing the move
 	 */
 	public String getMove(Board gameBoard) {
-		Move moveToTake = minimax(gameBoard);
+		Move moveToTake = abMinimax(gameBoard);
+		// Move moveToTake = minimax(gameBoard);
 		return moveToTake.moveString;
 	}
 
@@ -352,6 +353,92 @@ public class Player {
 	 */
 	public Move minimax(Board gameBoard) {
 		return maxMove(gameBoard, gameBoard.width * gameBoard.height / 2);
+	}
+
+	public Move abMinMove(Board gameBoard, int stepsLeft, int alpha, int beta) {
+		int terminalTestValue = gameBoard.isConnectN();
+		int bestValueOfMove;
+		Move moveOfMax;
+		Move bestMove = new Move("0 0", Integer.MAX_VALUE);
+		List<String> possibleMoves = getPossibleMoves(gameBoard);
+
+		// if the game is over with a connection
+		if (terminalTestValue != -1) {
+			bestValueOfMove = (terminalTestValue == playerNumber) ? 2 : 0;
+			bestMove = new Move("0 0", bestValueOfMove);
+		} else if (stepsLeft == 0) {
+			bestMove = new Move("0 0", 1);
+		} else {
+			for (String move : possibleMoves) {
+				try {
+					moveOfMax = maxMove(
+							result(move, gameBoard, opponentNumber),
+							stepsLeft - 1);
+					if (moveOfMax.moveValue < bestMove.moveValue) {
+						bestMove.moveString = move;
+						bestMove.moveValue = moveOfMax.moveValue;
+					}
+				} catch (Connect4Exception e) {
+					e.getMessage();
+				}
+				if (bestMove.moveValue <= alpha) {
+					return bestMove;
+				}
+				beta = Math.min(beta, bestMove.moveValue);
+			}
+		}
+		return bestMove;
+	}
+
+	public Move abMaxMove(Board gameBoard, int stepsLeft, int alpha, int beta) {
+		int terminalTestValue = gameBoard.isConnectN();
+		int bestValueOfMove;
+		Move moveOfMin;
+		Move bestMove = new Move("0 0", Integer.MIN_VALUE);
+		List<String> possibleMoves = getPossibleMoves(gameBoard);
+
+		// if the game is over with a connection
+		if (terminalTestValue != -1) {
+			// System.out.println(terminalTestValue);
+			bestValueOfMove = (terminalTestValue == playerNumber) ? 2 : 0;
+			bestMove = new Move("0 0", bestValueOfMove);
+		} else if (stepsLeft == 0) {
+			bestMove = new Move("0 0", 1);
+		} else {
+			for (String move : possibleMoves) {
+				try {
+					moveOfMin = minMove(result(move, gameBoard, playerNumber),
+							stepsLeft - 1);
+					// System.out.println(moveOfMin.moveValue);
+					if (moveOfMin.moveValue > bestMove.moveValue) {
+						bestMove.moveString = move;
+						bestMove.moveValue = moveOfMin.moveValue;
+					}
+				} catch (Connect4Exception e) {
+					e.getMessage();
+				}
+				if (bestMove.moveValue >= beta) {
+					return bestMove;
+				}
+				alpha = Math.max(bestMove.moveValue, alpha);
+			}
+		}
+		// gameBoard.printBoard();
+		// System.out.println("Bestmove" + bestMove.moveValue);
+		// System.out.println("Bestmove" + bestMove.moveString);
+		return bestMove;
+	}
+
+	/**
+	 * Minimax function for deciding the next move
+	 * 
+	 * @param gameBoard
+	 * @param isMax
+	 * @return
+	 */
+	public Move abMinimax(Board gameBoard) {
+		return abMaxMove(gameBoard, gameBoard.width * gameBoard.height / 2,
+				Integer.MIN_VALUE, Integer.MAX_VALUE);
 	}
 
 	public List<String> getPossibleMoves(Board gameBoard) {
