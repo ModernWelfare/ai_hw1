@@ -45,6 +45,18 @@ public class Board {
 		return newBoard;
 	}
 
+	public boolean equals(Board boardToCompare) {
+		boolean toReturn = true;
+		for (int i = 0; i < height; i++) {
+			for (int j = 0; j < width; j++) {
+				if (boardToCompare.board[i][j] != this.board[i][j]) {
+					toReturn = false;
+				}
+			}
+		}
+		return toReturn;
+	}
+
 	public void printBoard() {
 		System.out.println("Board: ");
 		for (int i = 0; i < height; i++) {

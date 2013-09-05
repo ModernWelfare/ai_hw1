@@ -61,7 +61,8 @@ public class Connector {
 				move = us.getMove(gameBoard);
 				// print the move to be read by the adversary
 				try {
-					us.makeMove(move, gameBoard);
+					us.makeMove(move, us.playerNumber, gameBoard);
+					gameBoard.printBoard();
 				} catch (Connect4Exception e) {
 					System.out.println("We lost!");
 				}
@@ -78,7 +79,9 @@ public class Connector {
 					break;
 				} else {
 					try {
-						adversary.makeMove(move, gameBoard);
+						adversary.makeMove(move, adversary.playerNumber,
+								gameBoard);
+						gameBoard.printBoard();
 					} catch (Connect4Exception e) {
 						System.out.println("opponent lost!");
 					}

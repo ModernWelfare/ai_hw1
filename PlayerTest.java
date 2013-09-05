@@ -12,7 +12,7 @@ public class PlayerTest {
 
 	@Before
 	public void setup() {
-		b = new Board(6, 7, 3);
+		b = new Board(3, 3, 3);
 		us = new Player(1, 10, true);
 	}
 
@@ -32,8 +32,8 @@ public class PlayerTest {
 	 * */
 	@Test
 	public void testResult() throws Connect4Exception {
-		Board newBoard = us.result("0 1", b, 1);
-		newBoard.printBoard();
+		// Board newBoard = us.result("0 1", b, 1);
+		// newBoard.printBoard();
 	}
 
 	/**
@@ -41,6 +41,8 @@ public class PlayerTest {
 	 * */
 	@Test
 	public void testMinimax() {
+		us.minimax(b, true, 1);
+		System.out.println(us.moveToTake);
 		assertTrue(us.minimax(b, true, 1) == 1);
 	}
 

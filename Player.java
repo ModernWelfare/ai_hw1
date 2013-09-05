@@ -9,13 +9,21 @@ import java.util.List;
  */
 public class Player {
 	int playerNumber;
+	int opponentNumber;
 	int timeLimit;
 	boolean isMax;
+	String moveToTake;
+
+	List<Board> minGameBoards;
+	List<Board> maxGameBoards;
 
 	public Player(int playerNumber, int timeLimit, boolean isMax) {
 		this.playerNumber = playerNumber;
+		this.opponentNumber = 3 - playerNumber;
 		this.timeLimit = timeLimit;
 		this.isMax = isMax;
+		minGameBoards = new ArrayList<Board>();
+		maxGameBoards = new ArrayList<Board>();
 	}
 
 	/**
@@ -26,8 +34,8 @@ public class Player {
 	 * @return a string representing the move
 	 */
 	public String getMove(Board gameBoard) {
-		String move = "2 1";
-		return move;
+		minimax(gameBoard, !isMax, playerNumber);
+		return moveToTake;
 	}
 
 	/**
@@ -68,6 +76,60 @@ public class Player {
 		System.out.println(playerNumber + ": " + timeLimit + "\n");
 	}
 
+	public Move minMove(Board gameBoard) {
+		int terminalTestValue = gameBoard.isConnectN();
+		int bestValueOfMove;
+		Move moveOfMax;
+		Move bestMove = new Move("0 0", 1);
+		List<String> possibleMoves = getPossibleMoves(gameBoard);
+
+		// if the game is over with a connection
+		if (terminalTestValue != -1) {
+			bestValueOfMove = (terminalTestValue == playerNumber) ? 1 : 0;
+			bestMove = new Move("0 0", bestValueOfMove);
+		} else {
+			for (String move : possibleMoves) {
+				try {
+					moveOfMax = maxMove(result(move, gameBoard, opponentNumber,
+							minGameBoards));
+					if (moveOfMax.moveValue < bestMove.moveValue) {
+						bestMove = moveOfMax;
+					}
+				} catch (Connect4Exception e) {
+					e.getMessage();
+				}
+			}
+		}
+		return bestMove;
+	}
+
+	public Move maxMove(Board gameBoard) {
+		int terminalTestValue = gameBoard.isConnectN();
+		int bestValueOfMove;
+		Move moveOfMin;
+		Move bestMove = new Move("0 0", 0);
+		List<String> possibleMoves = getPossibleMoves(gameBoard);
+
+		// if the game is over with a connection
+		if (terminalTestValue != -1) {
+			bestValueOfMove = (terminalTestValue == playerNumber) ? 1 : 0;
+			bestMove = new Move("0 0", bestValueOfMove);
+		} else {
+			for (String move : possibleMoves) {
+				try {
+					moveOfMin = minMove(result(move, gameBoard, playerNumber,
+							minGameBoards));
+					if (moveOfMin.moveValue > bestMove.moveValue) {
+						bestMove = moveOfMin;
+					}
+				} catch (Connect4Exception e) {
+					e.getMessage();
+				}
+			}
+		}
+		return bestMove;
+	}
+
 	/**
 	 * Minimax function for deciding the next move
 	 * 
@@ -75,22 +137,29 @@ public class Player {
 	 * @param isMax
 	 * @return
 	 */
-	public int minimax(Board gameBoard, boolean isMax, int playerNum) {
+	public Move minimax(Board gameBoard) {
+		return maxMove(gameBoard);
 		int valueToReturn;
 		int terminalTestValue = gameBoard.isConnectN();
 		List<String> possibleMoves = getPossibleMoves(gameBoard);
+		boolean moveSelected = false;
+
+		// Boards to check for loops in checking to avoid stack overflow
 
 		// if the game is over with a connection
 		if (terminalTestValue != -1) {
 			valueToReturn = (terminalTestValue == playerNumber) ? 1 : 0;
 		} else {
 			List<Integer> minimaxResults = new ArrayList<Integer>();
+			List<String> suggestedMoves = new ArrayList<String>();
 			for (String move : possibleMoves) {
 				try {
 					int minimaxValue = minimax(
-							result(move, gameBoard, 3 - playerNum), !isMax,
+							result(move, gameBoard, playerNum,
+									gameBoards.get(playerNum - 1)), !isMax,
 							3 - playerNum);
 					minimaxResults.add(minimaxValue);
+					suggestedMoves.add(move);
 				} catch (Connect4Exception e) {
 					e.getMessage();
 				}
@@ -104,6 +173,17 @@ public class Player {
 					}
 				}
 				valueToReturn = maxValue;
+
+				for (int i = 0; i < minimaxResults.size(); i++) {
+					if (minimaxResults.get(i) == 1) {
+						moveToTake = suggestedMoves.get(i);
+						moveSelected = true;
+					}
+				}
+
+				if (!moveSelected && suggestedMoves.size() > 0) {
+					moveToTake = suggestedMoves.get(0);
+				}
 			} else {
 				// choose the min value
 				int minValue = 1;
@@ -113,6 +193,17 @@ public class Player {
 					}
 				}
 				valueToReturn = minValue;
+
+				for (int i = 0; i < minimaxResults.size(); i++) {
+					if (minimaxResults.get(i) == 0) {
+						moveToTake = suggestedMoves.get(i);
+						moveSelected = true;
+					}
+				}
+
+				if (!moveSelected && suggestedMoves.size() > 0) {
+					moveToTake = suggestedMoves.get(0);
+				}
 			}
 		}
 		return valueToReturn;
@@ -133,11 +224,17 @@ public class Player {
 		return possibleMoves;
 	}
 
-	public Board result(String move, Board gameBoard, int playerNum)
-			throws Connect4Exception {
+	public Board result(String move, Board gameBoard, int playerNum,
+			List<Board> checkedBoards) throws Connect4Exception {
 		Board newBoard = gameBoard.getDuplicate();
 		makeMove(move, playerNum, newBoard);
-		newBoard.printBoard();
+		for (Board checkedBoard : checkedBoards) {
+			if (checkedBoard.equals(newBoard)) {
+				throw new Connect4Exception(
+						"Board already checked for the player");
+			}
+		}
+		checkedBoards.add(newBoard);
 		return newBoard;
 	}
 }

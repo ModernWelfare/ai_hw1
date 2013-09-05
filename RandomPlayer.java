@@ -21,7 +21,7 @@ public class RandomPlayer {
 		List<String> ls = Arrays.asList(s.split(" "));
 		if (ls.size() == 2) {
 			try {
-				adversary.makeMove(s, gameBoard);
+				adversary.makeMove(s, adversary.playerNumber, gameBoard);
 			} catch (Connect4Exception e) {
 				System.out.println("opponent lost!");
 			}
@@ -29,7 +29,7 @@ public class RandomPlayer {
 			move = us.getMove(gameBoard);
 			// print the move to be read by the adversary
 			try {
-				us.makeMove(move, gameBoard);
+				us.makeMove(move, us.playerNumber, gameBoard);
 			} catch (Connect4Exception e) {
 				System.out.println(move);
 				throw new Connect4Exception("We Lost!!!");
@@ -60,7 +60,7 @@ public class RandomPlayer {
 				move = us.getMove(gameBoard);
 				// print the move to be read by the adversary
 				try {
-					us.makeMove(move, gameBoard);
+					us.makeMove(move, us.playerNumber, gameBoard);
 				} catch (Connect4Exception e) {
 					e.getMessage();
 				}
