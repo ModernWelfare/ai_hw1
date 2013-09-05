@@ -5,6 +5,7 @@ import java.util.List;
  * Class to implement the player of the game
  * 
  * @author bli
+ * @author tnarayan
  * 
  */
 public class Player {
@@ -34,10 +35,215 @@ public class Player {
 	}
 
 	/**
+	 * @param numTokens
+	 * @param gameBoard
+	 * @param numRow
+	 * @param numColumn
+	 * 
+	 * @return 1 if numTokens number of tokens found vertically, 0 otherwise
+	 */
+	public int evaluateTokensInARowVertically(int numTokens, Board gameBoard,
+			int numRow, int numColumn) {
+		int countOfTokensEncounteredVertically = 0;
+
+		for (int i = numRow; i < gameBoard.height; i++) {
+			if (gameBoard.board[numRow][numColumn] == gameBoard.board[i][numColumn]) {
+				countOfTokensEncounteredVertically++;
+			} else {
+				// since the continuity is broken, stop
+				break;
+
+				// TODO: is this check complete? Should we also be looking down
+				// the column
+				// to determine vertical n-in-a-row tokens?
+			}
+		}
+
+		if (countOfTokensEncounteredVertically >= numTokens) {
+			return 1;
+		} else {
+			return 0;
+		}
+	}
+
+	/**
+	 * @param numTokens
+	 * @param gameBoard
+	 * @param numRow
+	 * @param numColumn
+	 * 
+	 * @return 1 if numTokens number of tokens found horizontally, 0 otherwise
+	 */
+	public int evaluateTokensInARowHorizontally(int numTokens, Board gameBoard,
+			int numRow, int numColumn) {
+		int countOfTokensEncounteredHorizontally = 0;
+
+		for (int i = numColumn; i < gameBoard.width; i++) {
+			if (gameBoard.board[numRow][numColumn] == gameBoard.board[numRow][i]) {
+				countOfTokensEncounteredHorizontally++;
+			} else {
+				// since the continuity is broken, stop
+				break;
+
+				// TODO: is this check complete? Should we also be looking at
+				// the LHS of
+				// the column to determine horizontal n-in-a-row tokens?
+			}
+		}
+
+		if (countOfTokensEncounteredHorizontally >= numTokens) {
+			return 1;
+		} else {
+			return 0;
+		}
+	}
+
+	/**
+	 * @param numTokens
+	 * @param gameBoard
+	 * @param numRow
+	 * @param numColumn
+	 * 
+	 * @return 1 if numTokens number of tokens found in the left diagonal, 0
+	 *         otherwise
+	 */
+	public int evaluateTokensInARowDiagonallyLeft(int numTokens,
+			Board gameBoard, int numRow, int numColumn) {
+		int countOfTokensEncounteredDiagonallyLeft = 0;
+
+		int j = numColumn;
+
+		for (int i = numRow; i > -1; i--, j++) {
+			if (j > gameBoard.height) { // check to make sure not out of bounds
+				break;
+			} else if (gameBoard.board[numRow][numColumn] == gameBoard.board[i][j]) {
+				countOfTokensEncounteredDiagonallyLeft++;
+			} else {
+				break;
+			}
+		}
+
+		if (countOfTokensEncounteredDiagonallyLeft >= numTokens) {
+			return 1;
+		} else {
+			return 0;
+		}
+	}
+
+	/**
+	 * @param numTokens
+	 * @param gameBoard
+	 * @param numRow
+	 * @param numColumn
+	 * 
+	 * @return 1 if numTokens number of tokens found in the right diagonal, 0
+	 *         otherwise
+	 */
+	public int evaluateTokensInARowDiagonallyRight(int numTokens,
+			Board gameBoard, int numRow, int numColumn) {
+		int countOfTokensEncounteredDiagonallyRight = 0;
+
+		int j = numColumn;
+
+		for (int i = numRow; i < gameBoard.height; i++, j++) {
+			if (j > gameBoard.height) { // check to make sure not out of bounds
+				break;
+			} else if (gameBoard.board[numRow][numColumn] == gameBoard.board[i][j]) {
+				countOfTokensEncounteredDiagonallyRight++;
+			} else {
+				break;
+			}
+		}
+
+		if (countOfTokensEncounteredDiagonallyRight >= numTokens) {
+			return 1;
+		} else {
+			return 0;
+		}
+	}
+
+	/**
+	 * @param numTokens
+	 *            the N-in-a-row number of tokens being searched for
+	 * @param playerNum
+	 *            the player whose tokens are being searched
+	 * @param gameBoard
+	 * 
+	 * @return the number of tokens encountered for the specified N-in-a-row
+	 */
+	public int evaluateTokensInARow(int numTokens, int playerNum,
+			Board gameBoard) {
+		int countOfTokensEncountered = 0;
+
+		for (int i = 0; i < gameBoard.height; i++) {
+			for (int j = 0; j < gameBoard.width; i++) {
+				if (gameBoard.board[i][j] == playerNum) {// check only our
+															// tokens;
+					// ignore the opponent's
+					// tokens
+					countOfTokensEncountered += evaluateTokensInARowVertically(
+							numTokens, gameBoard, i, j);
+					countOfTokensEncountered += evaluateTokensInARowHorizontally(
+							numTokens, gameBoard, i, j);
+					countOfTokensEncountered += evaluateTokensInARowDiagonallyLeft(
+							numTokens, gameBoard, i, j);
+					countOfTokensEncountered += evaluateTokensInARowDiagonallyRight(
+							numTokens, gameBoard, i, j);
+				}
+			}
+		}
+
+		return countOfTokensEncountered;
+	}
+
+	/**
+	 * Evaluates the relative preferability of the board fours-in-a-row are
+	 * weighted more than threes-in-a-row, which in turn are weighted more than
+	 * twos-in-a-row
+	 * 
+	 * Currently using a relatively simple heuristic: assign arbitrary weights
+	 * to the relatively preferable board configurations
+	 * 
+	 * @param gameBoard
+	 * @param playerNum
+	 * 
+	 */
+	public int evaluateBoard(Board gameBoard, int playerNum) {
+		int ourScoreFoursInARow = evaluateTokensInARow(4, playerNum, gameBoard) * 10000;
+		int ourScoreThreesInARow = evaluateTokensInARow(3, playerNum, gameBoard) * 1000;
+		int ourScoreTwosInARow = evaluateTokensInARow(2, playerNum, gameBoard) * 100;
+		int ourTotalScore = ourScoreFoursInARow + ourScoreThreesInARow
+				+ ourScoreTwosInARow;
+
+		// TODO: is this the acceptable way of determining the opponent's
+		// number?
+		int opponentPlayerNum = (playerNum == 1) ? 2 : 1;
+
+		int opponentScoreFoursInARow = evaluateTokensInARow(4,
+				opponentPlayerNum, gameBoard) * 10000 * 10; // bumping up by
+															// factor of 10
+															// since this would
+															// mean our player
+															// would lose in
+															// that
+															// configuration
+		int opponentScoreThreesInARow = evaluateTokensInARow(3,
+				opponentPlayerNum, gameBoard) * 1000;
+		int opponentScoreTwosInARow = evaluateTokensInARow(2,
+				opponentPlayerNum, gameBoard) * 100;
+		int opponentTotalScore = opponentScoreFoursInARow
+				+ opponentScoreThreesInARow + opponentScoreTwosInARow;
+
+		return ourTotalScore - opponentTotalScore;
+	}
+
+	/**
 	 * Function for the player to make a move based on a string
 	 * 
 	 * @param moveToTake
 	 *            The move the player is going to make
+	 * @param playerNum
+	 *            represents the current player
 	 * @param gameBoard
 	 *            The board on which the player makes the move on
 	 * @throws Connect4Exception
@@ -55,7 +261,7 @@ public class Player {
 			} else {
 				throw new Connect4Exception("Drop: Move illegal");
 			}
-		} else {
+		} else { // the move made was to remove a disc
 			if (gameBoard.canRemoveADiscFromBottom(col, playerNum)) {
 				gameBoard.removeADiscFromBottom(col);
 			} else {
