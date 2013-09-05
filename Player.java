@@ -64,10 +64,6 @@ public class Player {
 			} else {
 				// since the continuity is broken, stop
 				break;
-
-				// TODO: is this check complete? Should we also be looking down
-				// the column
-				// to determine vertical n-in-a-row tokens?
 			}
 		}
 
@@ -96,10 +92,6 @@ public class Player {
 			} else {
 				// since the continuity is broken, stop
 				break;
-
-				// TODO: is this check complete? Should we also be looking at
-				// the LHS of
-				// the column to determine horizontal n-in-a-row tokens?
 			}
 		}
 
@@ -209,44 +201,90 @@ public class Player {
 	}
 
 	/**
-	 * Evaluates the relative preferability of the board fours-in-a-row are
+	 * Evaluates the relative preferability of the board: fours-in-a-row are
 	 * weighted more than threes-in-a-row, which in turn are weighted more than
 	 * twos-in-a-row
 	 * 
-	 * Currently using a relatively simple heuristic: assign arbitrary weights
-	 * to the relatively preferable board configurations
+	 * Extending this to connect-N: twos-in-a-row, threes-in-a-row, ..., n-in-a-row
+	 * 
+	 * Thus, the heuristic is assigning heavier weights to relatively more preferable 
+	 * board layouts.
 	 * 
 	 * @param gameBoard
+	 * @param NConnections
 	 * @param playerNum
 	 * 
 	 */
-	public int evaluateBoard(Board gameBoard, int playerNum) {
-		int ourScoreFoursInARow = evaluateTokensInARow(4, playerNum, gameBoard) * 10000;
-		int ourScoreThreesInARow = evaluateTokensInARow(3, playerNum, gameBoard) * 1000;
-		int ourScoreTwosInARow = evaluateTokensInARow(2, playerNum, gameBoard) * 100;
-		int ourTotalScore = ourScoreFoursInARow + ourScoreThreesInARow
-				+ ourScoreTwosInARow;
+	public int evaluateBoard(Board gameBoard, int NConnections, int playerNum) {
+		//TODO: this may overflow if NConnections is big enough
+		//Can take care of this by normalizing values
+		
+		int[] ourScores = new int[NConnections - 1];
+		int ourTotalScore = 0;
+		
+		int[] opponentScores = new int[NConnections - 1];
+		int opponentTotalScore = 0;
+		
+		int opponentPlayerNum = 3 - playerNum;
+		
+		for(int i = 2; i <= NConnections; i++){
+			//int ourScoreThreesInARow = evaluateTokensInARow(3, playerNum, gameBoard) * 1000;
+			ourScores[i - 2] = evaluateTokensInARow(i, playerNum, gameBoard) * i;
+			ourTotalScore += ourScores[i - 2];
+		}
+		
+		for(int i = 2; i<= NConnections; i++){
+			opponentScores[i - 2] = evaluateTokensInARow(i, opponentPlayerNum, gameBoard) * i;
+			opponentTotalScore += opponentScores[i -2];
+		}
 
-		// TODO: is this the acceptable way of determining the opponent's
-		// number?
-		int opponentPlayerNum = (playerNum == 1) ? 2 : 1;
-
-		int opponentScoreFoursInARow = evaluateTokensInARow(4,
-				opponentPlayerNum, gameBoard) * 10000 * 10; // bumping up by
-															// factor of 10
-															// since this would
-															// mean our player
-															// would lose in
-															// that
-															// configuration
-		int opponentScoreThreesInARow = evaluateTokensInARow(3,
-				opponentPlayerNum, gameBoard) * 1000;
-		int opponentScoreTwosInARow = evaluateTokensInARow(2,
-				opponentPlayerNum, gameBoard) * 100;
-		int opponentTotalScore = opponentScoreFoursInARow
-				+ opponentScoreThreesInARow + opponentScoreTwosInARow;
-
-		return ourTotalScore - opponentTotalScore;
+		//if opponent has >= 1 N connections on the board, we lose
+		if(opponentScores[NConnections - 2] >= 1){
+			return Integer.MIN_VALUE;
+		}
+		else{
+			return ourTotalScore - opponentTotalScore;
+		}
+	}
+	
+	/**
+	 * Simplified version of evaluateBoard(); checks only for N connections
+	 * (as opposed to 2, 3, ...., N connections in evaluateBoard())
+	 */
+	public int evaluateBoardForOnlyWins(Board gameBoard, int NConnections, int playerNum){
+		int ourScore = 0;
+		int opponentScore = 0;
+		
+		int opponentPlayerNum = 3 - playerNum;
+		
+		ourScore = evaluateTokensInARow(NConnections, playerNum, gameBoard);
+		opponentScore = evaluateTokensInARow(NConnections, opponentPlayerNum, gameBoard);
+		
+		if(opponentScore >= 1)
+			return Integer.MIN_VALUE;
+		else 
+			return ourScore - opponentScore;
+	}
+	
+	/**
+	 * Another heuristic: determines preferability of a particular move (drop in move)
+	 * using centre of board as reference point - the closer the move to the centre column,
+	 * the higher the preference
+	 */
+	public int evaluateBoardUsingCentreOfMass(Board gameBoard, int NConnections, int playerNum, int proposedMove){
+		int width = gameBoard.width; //for connect4, this is 7
+		int centre = Math.floor(width / 2) + 1; //for connect4, this is 4
+		return centre - Math.abs(proposedMove - centre);
+		/*for connect4:
+		 * columns -> weight
+		 * 1 -> 1
+		 * 2 -> 2
+		 * 3 -> 3
+		 * 4 -> 4
+		 * 5 -> 3
+		 * 6 -> 2
+		 * 7 -> 1
+		 */
 	}
 
 	/**
