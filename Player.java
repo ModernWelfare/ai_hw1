@@ -190,14 +190,14 @@ public class Player {
 	}
 
 	/**
-	 * Evaluates the relative preferability of the board fours-in-a-row are
+	 * Evaluates the relative preferability of the board: fours-in-a-row are
 	 * weighted more than threes-in-a-row, which in turn are weighted more than
 	 * twos-in-a-row
 	 * 
 	 * Extending this to connect-N: twos-in-a-row, threes-in-a-row, ..., n-in-a-row
 	 * 
-	 * Currently using a relatively simple heuristic: assign arbitrary weights
-	 * to the relatively preferable board configurations
+	 * Thus, the heuristic is assigning heavier weights to relatively more preferable 
+	 * board layouts.
 	 * 
 	 * @param gameBoard
 	 * @param NConnections
@@ -206,33 +206,53 @@ public class Player {
 	 */
 	public int evaluateBoard(Board gameBoard, int NConnections, int playerNum) {
 		//TODO: this may overflow if NConnections is big enough
+		//Can take care of this by normalizing values
 		
-		int ourScores[NConnections - 1];
+		int[] ourScores = new int[NConnections - 1];
 		int ourTotalScore = 0;
 		
-		int opponentScores[NConnections - 1];
+		int[] opponentScores = new int[NConnections - 1];
 		int opponentTotalScore = 0;
 		
-		int opponentPlayerNum = (playerNum == 1) ? 2 : 1;
+		int opponentPlayerNum = 3 - playerNum;
 		
 		for(int i = 2; i <= NConnections; i++){
 			//int ourScoreThreesInARow = evaluateTokensInARow(3, playerNum, gameBoard) * 1000;
-			ourScores[i - 2] = evaluateTokensInARow(i, playerNum, gameBoard) * Math.pow(10, i);
+			ourScores[i - 2] = evaluateTokensInARow(i, playerNum, gameBoard) * i;
 			ourTotalScore += ourScores[i - 2];
 		}
 		
 		for(int i = 2; i<= NConnections; i++){
-			opponentScores[i - 2] = evaluateTokensInARow(i, opponentPlayerNum, gameBoard) * Math.pow(10,  i);
+			opponentScores[i - 2] = evaluateTokensInARow(i, opponentPlayerNum, gameBoard) * i;
 			opponentTotalScore += opponentScores[i -2];
 		}
 
 		//if opponent has >= 1 N connections on the board, we lose
-		if(evaluateTokensInARow(NConnections, opponentPlayerNum, gameBoard) >= 1){
+		if(opponentScores[NConnections - 2] >= 1){
 			return Integer.MIN_VALUE;
 		}
 		else{
 			return ourTotalScore - opponentTotalScore;
 		}
+	}
+	
+	/**
+	 * Simplified version of evaluateBoard(); checks only for N connections
+	 * (as opposed to 2, 3, ...., N connections in evaluateBoard())
+	 */
+	public int evaluateBoardForOnlyWins(Board gameBoard, int NConnections, int playerNum){
+		int ourScore = 0;
+		int opponentScore = 0;
+		
+		int opponentPlayerNum = 3 - playerNum;
+		
+		ourScore = evaluateTokensInARow(NConnections, playerNum, gameBoard);
+		opponentScore = evaluateTokensInARow(NConnections, opponentPlayerNum, gameBoard);
+		
+		if(opponentScore >= 1)
+			return Integer.MIN_VALUE;
+		else 
+			return ourScore - opponentScore;
 	}
 
 	/**
