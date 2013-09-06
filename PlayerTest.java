@@ -1,7 +1,5 @@
 import static org.junit.Assert.assertNotNull;
 
-import java.util.List;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -12,19 +10,19 @@ public class PlayerTest {
 
 	@Before
 	public void setup() {
-		b = new Board(6, 7, 4);
+		b = new Board(11, 11, 4);
 		us = new Player(1, 5);
 	}
 
-	/**
-	 * test is connect N diagonally y=-x+k
-	 * 
-	 * */
-	@Test
-	public void testMoves() {
-		List<String> possibleMoves = us.getPossibleMoves(b);
-		System.out.println(possibleMoves.get(0));
-	}
+	// /**
+	// * test is connect N diagonally y=-x+k
+	// *
+	// * */
+	// @Test
+	// public void testMoves() {
+	// List<String> possibleMoves = us.getPossibleMoves(b);
+	// System.out.println(possibleMoves.get(0));
+	// }
 
 	/**
 	 * test is connect N diagonally y=-x+k

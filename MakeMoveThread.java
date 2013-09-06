@@ -10,13 +10,17 @@ public class MakeMoveThread implements TimedRunnable {
 
 	@Override
 	public void run() {
-		result = currentPlayer.abMinimax(gameBoard);
+		MoveStrategy currentStrategy = new AbMinimaxStrategy(gameBoard,
+				currentPlayer);
+		result = currentStrategy.proposeMove();
 	}
 
 	@Override
 	public void expire() {
 		if (result == null) {
-			result = new Move("9 9", 99);
+			MoveStrategy currentStrategy = new HeuristicStrategy(gameBoard,
+					currentPlayer);
+			result = currentStrategy.proposeMove();
 		}
 	}
 }
