@@ -17,6 +17,14 @@ public class Player {
 	// List<Board> minGameBoards;
 	// List<Board> maxGameBoards;
 
+	/**
+	 * Constructor for the player
+	 * 
+	 * @param playerNumber
+	 *            The number of the player, either 1 or 2
+	 * @param timeLimit
+	 *            The time limit given to the player to make the move
+	 */
 	public Player(int playerNumber, int timeLimit) {
 		this.playerNumber = playerNumber;
 		this.opponentNumber = 3 - playerNumber;
@@ -25,10 +33,11 @@ public class Player {
 	}
 
 	/**
-	 * Function to get a valid move
+	 * Function to get a valid move. It uses a limited amount of time to execute
+	 * the minimax function
 	 * 
-	 * @param timeout
 	 * @param gameBoard
+	 *            the board on which the game is carried out
 	 * @return a string representing the move
 	 */
 	public String getMove(Board gameBoard) {
@@ -205,10 +214,11 @@ public class Player {
 	 * weighted more than threes-in-a-row, which in turn are weighted more than
 	 * twos-in-a-row
 	 * 
-	 * Extending this to connect-N: twos-in-a-row, threes-in-a-row, ..., n-in-a-row
+	 * Extending this to connect-N: twos-in-a-row, threes-in-a-row, ...,
+	 * n-in-a-row
 	 * 
-	 * Thus, the heuristic is assigning heavier weights to relatively more preferable 
-	 * board layouts.
+	 * Thus, the heuristic is assigning heavier weights to relatively more
+	 * preferable board layouts.
 	 * 
 	 * @param gameBoard
 	 * @param NConnections
@@ -216,79 +226,79 @@ public class Player {
 	 * 
 	 */
 	public int evaluateBoard(Board gameBoard, int NConnections, int playerNum) {
-		//TODO: this may overflow if NConnections is big enough
-		//Can take care of this by normalizing values
-		
+		// TODO: this may overflow if NConnections is big enough
+		// Can take care of this by normalizing values
+
 		int[] ourScores = new int[NConnections - 1];
 		int ourTotalScore = 0;
-		
+
 		int[] opponentScores = new int[NConnections - 1];
 		int opponentTotalScore = 0;
-		
+
 		int opponentPlayerNum = 3 - playerNum;
-		
-		for(int i = 2; i <= NConnections; i++){
-			//int ourScoreThreesInARow = evaluateTokensInARow(3, playerNum, gameBoard) * 1000;
-			ourScores[i - 2] = evaluateTokensInARow(i, playerNum, gameBoard) * i;
+
+		for (int i = 2; i <= NConnections; i++) {
+			// int ourScoreThreesInARow = evaluateTokensInARow(3, playerNum,
+			// gameBoard) * 1000;
+			ourScores[i - 2] = evaluateTokensInARow(i, playerNum, gameBoard)
+					* i;
 			ourTotalScore += ourScores[i - 2];
 		}
-		
-		for(int i = 2; i<= NConnections; i++){
-			opponentScores[i - 2] = evaluateTokensInARow(i, opponentPlayerNum, gameBoard) * i;
-			opponentTotalScore += opponentScores[i -2];
+
+		for (int i = 2; i <= NConnections; i++) {
+			opponentScores[i - 2] = evaluateTokensInARow(i, opponentPlayerNum,
+					gameBoard) * i;
+			opponentTotalScore += opponentScores[i - 2];
 		}
 
-		//if opponent has >= 1 N connections on the board, we lose
-		if(opponentScores[NConnections - 2] >= 1){
+		// if opponent has >= 1 N connections on the board, we lose
+		if (opponentScores[NConnections - 2] >= 1) {
 			return Integer.MIN_VALUE;
-		}
-		else{
+		} else {
 			return ourTotalScore - opponentTotalScore;
 		}
 	}
-	
+
 	/**
-	 * Simplified version of evaluateBoard(); checks only for N connections
-	 * (as opposed to 2, 3, ...., N connections in evaluateBoard())
+	 * Simplified version of evaluateBoard(); checks only for N connections (as
+	 * opposed to 2, 3, ...., N connections in evaluateBoard())
 	 */
-	public int evaluateBoardForOnlyWins(Board gameBoard, int NConnections, int playerNum){
+	public int evaluateBoardForOnlyWins(Board gameBoard, int NConnections,
+			int playerNum) {
 		int ourScore = 0;
 		int opponentScore = 0;
-		
+
 		int opponentPlayerNum = 3 - playerNum;
-		
+
 		ourScore = evaluateTokensInARow(NConnections, playerNum, gameBoard);
-		opponentScore = evaluateTokensInARow(NConnections, opponentPlayerNum, gameBoard);
-		
-		if(opponentScore >= 1)
+		opponentScore = evaluateTokensInARow(NConnections, opponentPlayerNum,
+				gameBoard);
+
+		if (opponentScore >= 1)
 			return Integer.MIN_VALUE;
-		else 
+		else
 			return ourScore - opponentScore;
 	}
-	
+
 	/**
-	 * Another heuristic: determines preferability of a particular move (drop in move)
-	 * using centre of board as reference point - the closer the move to the centre column,
-	 * the higher the preference
+	 * Another heuristic: determines preferability of a particular move (drop in
+	 * move) using centre of board as reference point - the closer the move to
+	 * the centre column, the higher the preference
 	 */
-	public int evaluateBoardUsingCentreOfMass(Board gameBoard, int NConnections, int playerNum, int proposedMove){
-		int width = gameBoard.width; //for connect4, this is 7
-		int centre = Math.floor(width / 2) + 1; //for connect4, this is 4
+	public int evaluateBoardUsingCentreOfMass(Board gameBoard,
+			int NConnections, int playerNum, int proposedMove) {
+		int width = gameBoard.width; // for connect4, this is 7
+		int centre = (int) (Math.floor(width / 2) + 1); // for connect4, this is
+														// 4
 		return centre - Math.abs(proposedMove - centre);
-		/*for connect4:
-		 * columns -> weight
-		 * 1 -> 1
-		 * 2 -> 2
-		 * 3 -> 3
-		 * 4 -> 4
-		 * 5 -> 3
-		 * 6 -> 2
-		 * 7 -> 1
+		/*
+		 * for connect4: columns -> weight 1 -> 1 2 -> 2 3 -> 3 4 -> 4 5 -> 3 6
+		 * -> 2 7 -> 1
 		 */
 	}
 
 	/**
-	 * Function for the player to make a move based on a string
+	 * Function for the player to make a move based on a string.
 	 * 
 	 * @param moveToTake
 	 *            The move the player is going to make
@@ -327,6 +337,16 @@ public class Player {
 		System.out.println(playerNumber + ": " + timeLimit + "\n");
 	}
 
+	/**
+	 * Function for min to propose a move given the board
+	 * 
+	 * @param gameBoard
+	 *            the board on which the game is played
+	 * @param stepsLeft
+	 *            the depth of the search, when stepsLeft reaches 0, the
+	 *            function returns a possibly invalid move with a middle value
+	 * @return the proposed move of min
+	 */
 	public Move minMove(Board gameBoard, int stepsLeft) {
 		int terminalTestValue = gameBoard.isConnectN();
 		int bestValueOfMove;
@@ -358,6 +378,16 @@ public class Player {
 		return bestMove;
 	}
 
+	/**
+	 * Function for max to propose a move given the board
+	 * 
+	 * @param gameBoard
+	 *            the board on which the game is played
+	 * @param stepsLeft
+	 *            the depth of the search, when stepsLeft reaches 0, the
+	 *            function returns a possibly invalid move with a middle value
+	 * @return the proposed move of max
+	 */
 	public Move maxMove(Board gameBoard, int stepsLeft) {
 		int terminalTestValue = gameBoard.isConnectN();
 		int bestValueOfMove;
@@ -387,9 +417,6 @@ public class Player {
 				}
 			}
 		}
-		// gameBoard.printBoard();
-		// System.out.println("Bestmove" + bestMove.moveValue);
-		// System.out.println("Bestmove" + bestMove.moveString);
 		return bestMove;
 	}
 
@@ -404,6 +431,15 @@ public class Player {
 		return maxMove(gameBoard, DEPTH);
 	}
 
+	/**
+	 * Minimax using alpha-beta pruning
+	 * 
+	 * @param gameBoard
+	 * @param stepsLeft
+	 * @param alpha
+	 * @param beta
+	 * @return
+	 */
 	public Move abMinMove(Board gameBoard, int stepsLeft, int alpha, int beta) {
 		int terminalTestValue = gameBoard.isConnectN();
 		int bestValueOfMove;
@@ -439,6 +475,15 @@ public class Player {
 		return bestMove;
 	}
 
+	/**
+	 * Minimax using alpha-beta pruning
+	 * 
+	 * @param gameBoard
+	 * @param stepsLeft
+	 * @param alpha
+	 * @param beta
+	 * @return
+	 */
 	public Move abMaxMove(Board gameBoard, int stepsLeft, int alpha, int beta) {
 		int terminalTestValue = gameBoard.isConnectN();
 		int bestValueOfMove;
@@ -479,7 +524,7 @@ public class Player {
 	}
 
 	/**
-	 * Minimax function for deciding the next move
+	 * Minimax function using alpha beta pruning
 	 * 
 	 * @param gameBoard
 	 * @param isMax
