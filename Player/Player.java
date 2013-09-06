@@ -1,8 +1,8 @@
 package Player;
 
-import MoveStrategies.MakeMoveThread;
 import Util.Board;
 import Util.Connect4Exception;
+import Util.MakeMoveThread;
 import Util.Move;
 import Util.TimedTaskExecuter;
 
