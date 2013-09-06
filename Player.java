@@ -35,6 +35,7 @@ public class Player {
 		Move moveToTake = new Move("0 0", 999);
 		MakeMoveThread mmt = new MakeMoveThread(gameBoard, new Player(
 				playerNumber, timeLimit));
+		//TODO: hook to bestMoveToMake() inside MakeMoveThread, in expires() inside if(result == null)
 		TimedTaskExecuter.execute(mmt, (timeLimit - 1) * 1000);
 		try {
 			Thread.sleep((timeLimit - 1) * 1000 + 500);
@@ -274,7 +275,7 @@ public class Player {
 	public int evaluateBoardUsingCentreOfMass(Board gameBoard, int NConnections, int playerNum){
 		int width = gameBoard.width; //for connect4, this is 7
 		int height = gameBoard.height; //for connect4, this is 6	
-		int centre = Math.floor(width / 2) + 1; //for connect4, this is 4
+		int centre = (width / 2) + 1; //for connect4, this is 4
 		
 		int opponentNum = 3 - playerNum;
 		int opponentScore = 0;
@@ -282,10 +283,10 @@ public class Player {
 		
 		for(int i = 0; i < height; i++){
 			for(int j = 0; j < width; j++){
-				if(gameBoard[i][j] == playerNum){
+				if(gameBoard.board[i][j] == playerNum){
 					ourScore += centre - Math.abs(j - centre);
 				}
-				else if(gameBoard[i][j] == opponentNum){
+				else if(gameBoard.board[i][j] == opponentNum){
 					opponentScore += centre - Math.abs(j - centre);
 				}
 			}
@@ -307,10 +308,10 @@ public class Player {
 	 * A fourth heuristic
 	 * Currently evaluates a proposedMove as opposed to a board's state after making the move
 	 */
-	public int evaluateBoardAndMoveUsingEightPattern(Board gameBoard, int NConnections, int playerNum, Move proposedMove){
-		String proposedMoveString = Move.moveString;
-		int[] moveData = proposedMoveString.split(" ");
-		int moveNum = moveData[0];
+/*	public int evaluateBoardAndMoveUsingEightPattern(Board gameBoard, int NConnections, int playerNum, Move proposedMove){
+		String proposedMoveString = proposedMove.getMoveString();
+		String[] moveData = proposedMoveString.split(" ");
+		int moveNum = Integer.parseInt(moveData[0]);
 		
 		int height = gameBoard.height;
 		int proposedMoveColumn = moveNum;
@@ -321,7 +322,7 @@ public class Player {
 		int preferabilityCount = 0;
 		
 		for(int i = 0; i < height; i++){
-			if(gameBoard[i][proposedMoveColumn] == gameBoard.emptyCell){ //first empty spot in the column
+			if(gameBoard.board[i][proposedMoveColumn] == gameBoard.emptyCell){ //first empty spot in the column
 				proposedMoveRow = i;
 				break;
 			}
@@ -332,23 +333,23 @@ public class Player {
 		//if opponent's tokens are present, the move is less favorable
 		//if all spaces are empty, the move is okay
 		//the 8 spots around the coordinate pair may not all exist
-		for(int i = proposedMoveRow - 1, int j = proposedMoveColumn - 1; i < proposedMoveRow + 1, j < proposedMoveColumn + 1; i++, j++){
+		for(int i = proposedMoveRow - 1, j = proposedMoveColumn - 1; (i < proposedMoveRow + 1) && (j < proposedMoveColumn + 1); i++, j++){
 			if(i == proposedMoveRow && j == proposedMoveColumn){ //do not compare against yourself!
 				continue;
 			}
 			else{
-				if(gameBoard[i][j] == playerNum) preferabilityCount += 2;
-				else if(gameBoard[i][j] == gameBoard.emptyCell) preferabilityCount += 1;
+				if(gameBoard.board[i][j] == playerNum) preferabilityCount += 2;
+				else if(gameBoard.board[i][j] == gameBoard.emptyCell) preferabilityCount += 1;
 				else preferabilityCount += 0; //opponent's token; doesn't affect preferability
 			}
 		}
 		return preferabilityCount;
 	}
-	
+*/	
 	/**
 	 * returns the best move (a Move object) that the player (identified by playerNum) should make
 	 */
-	public Move bestMoveToMake(Board gameBoard, int playerNum){
+	public Move bestMoveToMake(Board gameBoard, int NConnections, int playerNum){
 		//make a copy of board so we can change as needed
 		Board tempBoard = gameBoard.getDuplicate();
 		
@@ -375,7 +376,7 @@ public class Player {
 				
 				//and evaluate the board value using heuristic function
 				//since the move is already made, we don't have to worry about whether it was a drop in or a pop out
-				boardValue = evaluateBoard(tempBoard);
+				boardValue = evaluateBoard(tempBoard, NConnections, playerNum);
 				
 				//store the move string in the move's moveString variable
 				theMove.setMoveString(aMove);
@@ -398,8 +399,8 @@ public class Player {
 		for(Move aMove: movesWithValues){
 			if(aMove.getMoveValue() > highestMoveValueSoFar){ //if two moves have the same value, we take the first one we encounter
 				highestMoveValueSoFar = aMove.getMoveValue();
-				proposedMove.setMoveString = aMove.getMoveString();
-				proposedMove.setMoveValue = highestMoveValueSoFar;
+				proposedMove.setMoveString(aMove.getMoveString());
+				proposedMove.setMoveValue(highestMoveValueSoFar);
 				//this if statement should be executed at least once; thus proposedMove will be a legal move
 			}
 		}
