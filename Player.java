@@ -150,7 +150,7 @@ public class Player {
 		int j = numColumn;
 
 		for (int i = numRow; i < gameBoard.height; i++, j++) {
-			if (j > gameBoard.height) { // check to make sure not out of bounds
+			if (j > gameBoard.height) { // make sure j is not out of bounds
 				break;
 			} else if (gameBoard.board[numRow][numColumn] == gameBoard.board[i][j]) {
 				countOfTokensEncounteredDiagonallyRight++;
@@ -267,18 +267,29 @@ public class Player {
 	}
 	
 	/**
-	 * Another heuristic: determines preferability of a particular move (drop in move)
-	 * using centre of board as reference point - the closer the move to the centre column,
-	 * the higher the preference
+	 * Another heuristic: determines preferability of a board using the number of tokens
+	 * closer to the centre of the board; the number is reduced based on the number of
+	 * opponent tokens closer to the centre of the board
 	 */
-	public void evaluateBoardUsingCentreOfMass(Board gameBoard, int NConnections, int playerNum, Move proposedMove){
-		String proposedMoveString = Move.moveString;
-		int[] moveData = proposedMoveString.split(" ");
-		int moveNum = moveData[0];
-		
+	public int evaluateBoardUsingCentreOfMass(Board gameBoard, int NConnections, int playerNum){
 		int width = gameBoard.width; //for connect4, this is 7
+		int height = gameBoard.height; //for connect4, this is 6	
 		int centre = Math.floor(width / 2) + 1; //for connect4, this is 4
-		int value = centre - Math.abs(moveNum - centre);
+		
+		int opponentNum = 3 - playerNum;
+		int opponentScore = 0;
+		int ourScore = 0;
+		
+		for(int i = 0; i < height; i++){
+			for(int j = 0; j < width; j++){
+				if(gameBoard[i][j] == playerNum){
+					ourScore += centre - Math.abs(j - centre);
+				}
+				else if(gameBoard[i][j] == opponentNum){
+					opponentScore += centre - Math.abs(j - centre);
+				}
+			}
+		}
 		/*for connect4:
 		 * columns -> weight
 		 * 1 -> 1
@@ -289,10 +300,14 @@ public class Player {
 		 * 6 -> 2
 		 * 7 -> 1
 		 */
-		proposedMove.moveValue = value;
+		return ourScore - opponentScore;
 	}
 	
-	public void evaluateBoardUsingEightPattern(Board gameBoard, int NConnections, int playerNum, Move proposedMove){
+	/**
+	 * A fourth heuristic
+	 * Currently evaluates a proposedMove as opposed to a board's state after making the move
+	 */
+	public int evaluateBoardAndMoveUsingEightPattern(Board gameBoard, int NConnections, int playerNum, Move proposedMove){
 		String proposedMoveString = Move.moveString;
 		int[] moveData = proposedMoveString.split(" ");
 		int moveNum = moveData[0];
@@ -327,7 +342,69 @@ public class Player {
 				else preferabilityCount += 0; //opponent's token; doesn't affect preferability
 			}
 		}
-		proposedMove.moveValue = preferabilityCount;
+		return preferabilityCount;
+	}
+	
+	/**
+	 * returns the best move (a Move object) that the player (identified by playerNum) should make
+	 */
+	public Move bestMoveToMake(Board gameBoard, int playerNum){
+		//make a copy of board so we can change as needed
+		Board tempBoard = gameBoard.getDuplicate();
+		
+		int boardValue = 0;
+		
+		//get list of possible moves (strings)
+		List<String> possibleMoves = getPossibleMoves(tempBoard);
+		
+		//store all legal moves with corresponding values as determined after making the moves
+		List<Move> movesWithValues = new ArrayList<Move>();
+		
+		//store each legal move in turn
+		Move theMove = new Move();
+		
+		for(String aMove: possibleMoves){
+			//reinitialize each time so that each potential move is made on a copy of the unaltered game board
+			tempBoard = gameBoard.getDuplicate(); 
+			
+			try{
+				//for a proposed move, make the move on a copy of the board
+				//if move is not valid, a Connect4Exception will be thrown
+				//if move is valid, the move will be made on the copy of the game board
+				makeMove(aMove, playerNum, tempBoard);
+				
+				//and evaluate the board value using heuristic function
+				//since the move is already made, we don't have to worry about whether it was a drop in or a pop out
+				boardValue = evaluateBoard(tempBoard);
+				
+				//store the move string in the move's moveString variable
+				theMove.setMoveString(aMove);
+				
+				//store the board value in the move's moveValue variable
+				theMove.setMoveValue(boardValue);
+				
+				//add the move to list of moves
+				movesWithValues.add(theMove);
+				
+			} catch (Connect4Exception e){
+				//the potential move was illegal; ignore it
+			}			
+		}
+		
+		int highestMoveValueSoFar = 0;
+		Move proposedMove = new Move();
+		
+		//among all moves, find the move with the highest value
+		for(Move aMove: movesWithValues){
+			if(aMove.getMoveValue() > highestMoveValueSoFar){ //if two moves have the same value, we take the first one we encounter
+				highestMoveValueSoFar = aMove.getMoveValue();
+				proposedMove.setMoveString = aMove.getMoveString();
+				proposedMove.setMoveValue = highestMoveValueSoFar;
+				//this if statement should be executed at least once; thus proposedMove will be a legal move
+			}
+		}
+		
+		return proposedMove;
 	}
 	
 	/**
@@ -532,6 +609,10 @@ public class Player {
 		return abMaxMove(gameBoard, DEPTH, Integer.MIN_VALUE, Integer.MAX_VALUE);
 	}
 
+	/**
+	 * returns a list of possible moves on the board
+	 * note that not all of these moves are legal!
+	 */
 	public List<String> getPossibleMoves(Board gameBoard) {
 		int width = gameBoard.width;
 		List<String> possibleMoves = new ArrayList<String>();
