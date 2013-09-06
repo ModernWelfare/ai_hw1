@@ -1,0 +1,18 @@
+Team:
+Bohao Li: bli@wpi.edu
+Tushar Narayan: tnarayan@wpi.edu
+
+This is our HW1 submission for CS4341 at WPI.
+
+Details of code files included:
+-Connector.java
+-Connect4Exception.java
+-Board.java
+-Move.java
+-Player.java
+-RandomPlayer.java
+-PlayerTest.java
+
+To run this program, please look at the exe_info.txt file.
+
+The process and results of our empirical valuation are detailed in the empirical_valuation.txt file.

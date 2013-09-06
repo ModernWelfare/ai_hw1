@@ -1,0 +1,42 @@
+Empirical valuation experiment:
+
+We decided to compare different heuristic evaluations for the purposes of our experiment.
+
+The three different heuristic functions we wrote are:
+1) evaluateBoard()
+This function iterates over the board, and counts the number of 2 connections to 
+n connections in a row - so it counts the number of twos-in-a-row, threes-in-a-row,...
+all the way up to N-in-row. It counts these in each of the four directions (vertical,
+horizontal, left diagonal, right diagonal).
+
+For each i in {2, 3, .... N}, if 'i' number of connections is larger than 0,
+we normalize the values by score for that i to 1. Similarly, if the number of 
+connections is less than 0, we normalize that score to -1. This ensures that 
+the total score for the board does not overflow the size of an int in case of 
+very large 'N' values. When adding up the individual scores for the overall 
+board score, we weigh the score by multiplying it with 'i'.
+
+We carry out the same process for the opponent player, and then subtract that value
+from the board value for our player.
+
+This is the heuristic we use if minimax is taking too long.
+
+2)evaluateBoardForOnlyWins()
+This function is a simplified version of evaluateBoard(). Instead of checking the number
+of connections from 2 to N, it checks the number of connections for just N (the winning
+condition). It does this for both our player and the opponent's player. If the opponent
+has any winning rows, we return a min value.
+
+Since there is just one value (that of NConnections) being considered, we do not 
+normalize the values.
+
+This is obviously not a very intelligent heuristic, since in a game of connect4, 
+a board with 2 connected tokens would score the same as a board with 3 connected tokens:
+where we know that 3 connected tokens is a better situation to be in.
+
+3) evaluateBoardUsingCentreOfMass()
+This function evaluates the board based on the number of tokens that are closer to the 
+centre of the board. The higher the number of tokens that are closer to the centre of
+the board, the higher the board is rated.
+
+It then calculates the board value for the opponent as well, and returns the difference.
