@@ -1,4 +1,4 @@
-package Util;
+package Player;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -6,7 +6,8 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
 
-import Player.Player;
+import Util.Board;
+import Util.Connect4Exception;
 
 public class RandomPlayer {
 

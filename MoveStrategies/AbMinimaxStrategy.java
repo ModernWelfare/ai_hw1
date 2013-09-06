@@ -1,8 +1,7 @@
-package Player;
+package MoveStrategies;
 import java.util.List;
 
-import MoveStrategies.MoveStrategy;
-import MoveStrategies.MoveStrategyImpl;
+import Player.Player;
 import Util.Board;
 import Util.Connect4Exception;
 import Util.Move;
