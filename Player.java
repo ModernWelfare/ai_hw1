@@ -260,10 +260,14 @@ public class Player {
 	 * using centre of board as reference point - the closer the move to the centre column,
 	 * the higher the preference
 	 */
-	public int evaluateBoardUsingCentreOfMass(Board gameBoard, int NConnections, int playerNum, int proposedMove){
+	public void evaluateBoardUsingCentreOfMass(Board gameBoard, int NConnections, int playerNum, Move proposedMove){
+		String proposedMoveString = Move.moveString;
+		int[] moveData = proposedMoveString.split(" ");
+		int moveNum = moveData[0];
+		
 		int width = gameBoard.width; //for connect4, this is 7
 		int centre = Math.floor(width / 2) + 1; //for connect4, this is 4
-		return centre - Math.abs(proposedMove - centre);
+		int value = centre - Math.abs(moveNum - centre);
 		/*for connect4:
 		 * columns -> weight
 		 * 1 -> 1
@@ -274,8 +278,47 @@ public class Player {
 		 * 6 -> 2
 		 * 7 -> 1
 		 */
+		proposedMove.moveValue = value;
 	}
-
+	
+	public void evaluateBoardUsingEightPattern(Board gameBoard, int NConnections, int playerNum, Move proposedMove){
+		String proposedMoveString = Move.moveString;
+		int[] moveData = proposedMoveString.split(" ");
+		int moveNum = moveData[0];
+		
+		int height = gameBoard.height;
+		int proposedMoveColumn = moveNum;
+		int proposedMoveRow;
+		
+		int opponentNum = 3 - playerNum;
+		
+		int preferabilityCount = 0;
+		
+		for(int i = 0; i < height; i++){
+			if(gameBoard[i][proposedMoveColumn] == gameBoard.emptyCell){ //first empty spot in the column
+				proposedMoveRow = i;
+				break;
+			}
+		}
+		
+		//now check the 8 spots around this (x, y) coordinate pair
+		//if our tokens are present, the move is more favorable
+		//if opponent's tokens are present, the move is less favorable
+		//if all spaces are empty, the move is okay
+		//the 8 spots around the coordinate pair may not all exist
+		for(int i = proposedMoveRow - 1, int j = proposedMoveColumn - 1; i < proposedMoveRow + 1, j < proposedMoveColumn + 1; i++, j++){
+			if(i == proposedMoveRow && j == proposedMoveColumn){ //do not compare against yourself!
+				continue;
+			}
+			else{
+				if(gameBoard[i][j] == playerNum) preferabilityCount += 2;
+				else if(gameBoard[i][j] == gameBoard.emptyCell) preferabilityCount += 1;
+				else preferabilityCount += 0; //opponent's token; doesn't affect preferability
+			}
+		}
+		proposedMove.moveValue = preferabilityCount;
+	}
+	
 	/**
 	 * Function for the player to make a move based on a string
 	 * 
