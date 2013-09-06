@@ -1,3 +1,4 @@
+package Util;
 /**
  * Class to implement the player of the game
  * 

@@ -1,28 +1,36 @@
-import java.util.ArrayList;
+package Player;
 import java.util.List;
+
+import MoveStrategies.MoveStrategy;
+import MoveStrategies.MoveStrategyImpl;
+import Util.Board;
+import Util.Connect4Exception;
+import Util.Move;
 
 /**
  * @author Li Bohao
  * 
  */
-public class AbMinimaxStrategy implements MoveStrategy {
-	public Board gameBoard;
-	public Player currentPlayer;
-	int playerNumber;
-	int opponentNumber;
-	int DEPTH;
+public class AbMinimaxStrategy extends MoveStrategyImpl implements MoveStrategy {
 
 	public AbMinimaxStrategy(Board gameBoard, Player currentPlayer) {
-		this.gameBoard = gameBoard;
-		this.currentPlayer = currentPlayer;
-		this.playerNumber = currentPlayer.playerNumber;
-		this.opponentNumber = currentPlayer.opponentNumber;
-		DEPTH = 6;
+		super(gameBoard, currentPlayer);
 	}
 
 	@Override
 	public Move proposeMove() {
 		return abMinimax(gameBoard);
+	}
+
+	/**
+	 * Minimax function using alpha beta pruning
+	 * 
+	 * @param gameBoard
+	 * @param isMax
+	 * @return
+	 */
+	public Move abMinimax(Board gameBoard) {
+		return abMaxMove(gameBoard, DEPTH, Integer.MIN_VALUE, Integer.MAX_VALUE);
 	}
 
 	/**
@@ -117,42 +125,4 @@ public class AbMinimaxStrategy implements MoveStrategy {
 		// System.out.println("Bestmove" + bestMove.moveString);
 		return bestMove;
 	}
-
-	/**
-	 * Minimax function using alpha beta pruning
-	 * 
-	 * @param gameBoard
-	 * @param isMax
-	 * @return
-	 */
-	public Move abMinimax(Board gameBoard) {
-		return abMaxMove(gameBoard, DEPTH, Integer.MIN_VALUE, Integer.MAX_VALUE);
-	}
-
-	/**
-	 * returns a list of possible moves on the board note that not all of these
-	 * moves are legal!
-	 */
-	public List<String> getPossibleMoves(Board gameBoard) {
-		int width = gameBoard.width;
-		List<String> possibleMoves = new ArrayList<String>();
-
-		String possibleDrop;
-		String possiblePop;
-		for (int i = 0; i < width; i++) {
-			possibleDrop = Integer.toString(i).concat(" 1");
-			possibleMoves.add(possibleDrop);
-			possiblePop = Integer.toString(i).concat(" 0");
-			possibleMoves.add(possiblePop);
-		}
-		return possibleMoves;
-	}
-
-	public Board result(String move, Board gameBoard, int playerNum)
-			throws Connect4Exception {
-		Board newBoard = gameBoard.getDuplicate();
-		currentPlayer.makeMove(move, playerNum, newBoard);
-		return newBoard;
-	}
-
 }

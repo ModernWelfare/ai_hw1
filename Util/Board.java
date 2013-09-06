@@ -1,3 +1,5 @@
+package Util;
+
 /**
  * This code is created for cs 4341 AI 2013a at WPI. All rights are reserved. 
  */
@@ -13,12 +15,12 @@ public class Board {
 	public int board[][];
 	int numOfDiscsInColumn[];
 	int emptyCell = 9;
-	int N;
+	public int N;
 	int PLAYER1 = 1;
 	int PLAYER2 = 2;
 	int NOCONNECTION = -1;
 
-	Board(int height, int width, int N) {
+	public Board(int height, int width, int N) {
 		this.width = width;
 		this.height = height;
 		board = new int[height][width];

@@ -1,3 +1,5 @@
+package Util;
+
 /**
  * @author Li Bohao
  * @author tnarayan
@@ -8,13 +10,13 @@ public class Move {
 	public int moveValue;
 
 	// empty constructor
-	Move() {
+	public Move() {
 		this.moveString = "";
 		this.moveValue = 0;
 	}
 
 	// constructor with params
-	Move(String moveString, int moveValue) {
+	public Move(String moveString, int moveValue) {
 		this.moveString = moveString;
 		this.moveValue = moveValue;
 	}

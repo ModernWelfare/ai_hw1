@@ -1,3 +1,9 @@
+package MoveStrategies;
+import Player.Player;
+import Util.Board;
+import Util.Move;
+import Util.TimedRunnable;
+
 public class MakeMoveThread implements TimedRunnable {
 	public Move result;
 	public Board gameBoard;
@@ -10,7 +16,7 @@ public class MakeMoveThread implements TimedRunnable {
 
 	@Override
 	public void run() {
-		MoveStrategy currentStrategy = new AbMinimaxStrategy(gameBoard,
+		MoveStrategy currentStrategy = new MinimaxStrategy(gameBoard,
 				currentPlayer);
 		result = currentStrategy.proposeMove();
 	}
@@ -21,6 +27,7 @@ public class MakeMoveThread implements TimedRunnable {
 			MoveStrategy currentStrategy = new HeuristicStrategy(gameBoard,
 					currentPlayer);
 			result = currentStrategy.proposeMove();
+			// result = new Move("9 9", 1000);
 		}
 	}
 }

@@ -1,3 +1,6 @@
+package MoveStrategies;
+import Util.Move;
+
 /**
  * Move strategy interface Used to adopt different strategies in making a move
  * 

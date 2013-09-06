@@ -1,5 +1,12 @@
+package MoveStrategies;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import Player.Player;
+import Util.Board;
+import Util.Connect4Exception;
+import Util.Move;
 
 /**
  * Implementation of the heuristic strategies

@@ -1,7 +1,11 @@
+package Player;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import Util.Board;
+import Util.Connect4Exception;
 
 public class PlayerTest {
 
@@ -10,7 +14,7 @@ public class PlayerTest {
 
 	@Before
 	public void setup() {
-		b = new Board(11, 11, 4);
+		b = new Board(6, 7, 4);
 		us = new Player(1, 5);
 	}
 

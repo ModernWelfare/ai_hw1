@@ -1,3 +1,10 @@
+package Player;
+
+import MoveStrategies.MakeMoveThread;
+import Util.Board;
+import Util.Connect4Exception;
+import Util.Move;
+import Util.TimedTaskExecuter;
 
 /**
  * Class to implement the player of the game
@@ -7,8 +14,8 @@
  * 
  */
 public class Player {
-	int playerNumber;
-	int opponentNumber;
+	public int playerNumber;
+	public int opponentNumber;
 	int timeLimit;
 	int DEPTH;
 

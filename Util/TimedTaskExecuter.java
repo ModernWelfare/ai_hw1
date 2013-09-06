@@ -1,3 +1,4 @@
+package Util;
 /**
  * Third party code, cited from http://bbs.csdn.net/topics/300023474
  * 

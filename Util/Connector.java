@@ -1,3 +1,4 @@
+package Util;
 /**
  * Class to implement the player of the game
  * 
@@ -6,9 +7,12 @@
  * 
  */
 
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+
+import Player.Player;
 
 /**
  * @author bli
