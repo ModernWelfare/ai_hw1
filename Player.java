@@ -12,6 +12,7 @@ public class Player {
 	int playerNumber;
 	int opponentNumber;
 	int timeLimit;
+	int DEPTH;
 
 	// List<Board> minGameBoards;
 	// List<Board> maxGameBoards;
@@ -20,6 +21,7 @@ public class Player {
 		this.playerNumber = playerNumber;
 		this.opponentNumber = 3 - playerNumber;
 		this.timeLimit = timeLimit;
+		this.DEPTH = 6;
 	}
 
 	/**
@@ -30,8 +32,17 @@ public class Player {
 	 * @return a string representing the move
 	 */
 	public String getMove(Board gameBoard) {
-		Move moveToTake = abMinimax(gameBoard);
-		// Move moveToTake = minimax(gameBoard);
+		Move moveToTake = new Move("0 0", 999);
+		MakeMoveThread mmt = new MakeMoveThread(gameBoard, new Player(
+				playerNumber, timeLimit));
+		TimedTaskExecuter.execute(mmt, (timeLimit - 1) * 1000);
+		try {
+			Thread.sleep((timeLimit - 1) * 1000 + 500);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		moveToTake = mmt.result;
 		return moveToTake.moveString;
 	}
 
@@ -433,7 +444,7 @@ public class Player {
 	 * @return
 	 */
 	public Move minimax(Board gameBoard) {
-		return maxMove(gameBoard, gameBoard.width * gameBoard.height / 2);
+		return maxMove(gameBoard, DEPTH);
 	}
 
 	public Move abMinMove(Board gameBoard, int stepsLeft, int alpha, int beta) {
@@ -518,8 +529,7 @@ public class Player {
 	 * @return
 	 */
 	public Move abMinimax(Board gameBoard) {
-		return abMaxMove(gameBoard, gameBoard.width * gameBoard.height / 2,
-				Integer.MIN_VALUE, Integer.MAX_VALUE);
+		return abMaxMove(gameBoard, DEPTH, Integer.MIN_VALUE, Integer.MAX_VALUE);
 	}
 
 	public List<String> getPossibleMoves(Board gameBoard) {

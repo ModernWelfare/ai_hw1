@@ -1,3 +1,10 @@
+/**
+ * Class to implement the player of the game
+ * 
+ * @author bli
+ * @author tnarayan
+ * 
+ */
 @SuppressWarnings("serial")
 public class Connect4Exception extends Exception {
 
