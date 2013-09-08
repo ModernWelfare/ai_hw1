@@ -1,32 +1,30 @@
 package Player;
+
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import MoveStrategies.NoLoopMinimaxStrategy;
 import Util.Board;
 import Util.Connect4Exception;
 
 public class PlayerTest {
 
 	Board b;
+	Board c;
 	Player us;
+	MockPlayer mock;
 
 	@Before
 	public void setup() {
-		b = new Board(6, 7, 4);
+		b = new Board(3, 3, 3);
+		c = new Board(3, 3, 3);
 		us = new Player(1, 5);
+		mock = new MockPlayer(1, 5);
+		mock.setStrategy(new NoLoopMinimaxStrategy(b, mock));
 	}
-
-	// /**
-	// * test is connect N diagonally y=-x+k
-	// *
-	// * */
-	// @Test
-	// public void testMoves() {
-	// List<String> possibleMoves = us.getPossibleMoves(b);
-	// System.out.println(possibleMoves.get(0));
-	// }
 
 	/**
 	 * test is connect N diagonally y=-x+k
@@ -35,18 +33,11 @@ public class PlayerTest {
 	 * */
 	@Test
 	public void testResult() throws Connect4Exception {
-		String a = us.getMove(b);
+		String a = mock.getMove(b);
 		assertNotNull(a);
-		System.out.println(a);
+		b.dropADiscFromTop(1, 1);
+		c.dropADiscFromTop(2, 1);
+		System.out.println('a');
+		assertTrue(!b.equals(c));
 	}
-	// /**
-	// * test is connect N diagonally y=-x+k
-	// * */
-	// @Test
-	// public void testMinimax() {
-	// us.minimax(b);
-	// System.out.println(us.minimax(b).moveValue);
-	// System.out.println(us.minimax(b).moveString);
-	// assertTrue(us.minimax(b).moveValue == 1);
-	// }
 }
