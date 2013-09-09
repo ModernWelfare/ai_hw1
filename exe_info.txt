@@ -1,3 +1,3 @@
 To run this program using the command line on a windows machine (same as for test players):
 
-java -jar Referee.jar "java -jar tnarayan_bli_Player.jar" "java -jar C:\courses2013fall\testPlayer2.jar" 6 7 3 10 10
+java -jar Referee.jar "java -jar tnarayan_bli_Player.jar" "java -jar C:\courses2013fall\testPlayer2.jar" 6 7 3 1 10
