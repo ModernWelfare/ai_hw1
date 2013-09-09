@@ -34,7 +34,7 @@ public class HeuristicStrategy implements MoveStrategy {
 	}
 
 	/**
-	 * returns a list of possible moves on the board note that not all of these
+	 * returns a list of possible moves on the board. note that not all of these
 	 * moves are legal!
 	 */
 	public List<String> getPossibleMoves(Board gameBoard) {
@@ -237,9 +237,6 @@ public class HeuristicStrategy implements MoveStrategy {
 	 * 
 	 */
 	public int evaluateBoard(Board gameBoard, int NConnections, int playerNum) {
-		// TODO: this may overflow if NConnections is big enough
-		// Can take care of this by normalizing values
-
 		int[] ourScores = new int[NConnections - 1];
 		int ourTotalScore = 0;
 
@@ -253,12 +250,24 @@ public class HeuristicStrategy implements MoveStrategy {
 			// gameBoard) * 1000;
 			ourScores[i - 2] = evaluateTokensInARow(i, playerNum, gameBoard)
 					* i;
+			
+			//normalize scores
+			if(ourScores[i - 2] > 0) ourScores[i - 2] = 1;
+			else if(ourScores[1 - 2] < 0) ourScores[i - 2] = -1;
+			else ourScores[i - 2] = 0;
+			
 			ourTotalScore += ourScores[i - 2];
 		}
 
 		for (int i = 2; i <= NConnections; i++) {
 			opponentScores[i - 2] = evaluateTokensInARow(i, opponentPlayerNum,
 					gameBoard) * i;
+			
+			//normalize scores
+			if(opponentScores[i - 2] > 0) opponentScores[i - 2] = 1;
+			else if(opponentScores[1 - 2] < 0) opponentScores[i - 2] = -1;
+			else opponentScores[i - 2] = 0;
+			
 			opponentTotalScore += opponentScores[i - 2];
 		}
 
@@ -281,6 +290,7 @@ public class HeuristicStrategy implements MoveStrategy {
 
 		int opponentPlayerNum = 3 - playerNum;
 
+		//not normalizing here since there's just one value for each score
 		ourScore = evaluateTokensInARow(NConnections, playerNum, gameBoard);
 		opponentScore = evaluateTokensInARow(NConnections, opponentPlayerNum,
 				gameBoard);
