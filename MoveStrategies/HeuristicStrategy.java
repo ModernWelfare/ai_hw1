@@ -418,16 +418,17 @@ public class HeuristicStrategy implements MoveStrategy {
 			}
 		}
 
-		int highestMoveValueSoFar = 0;
+		int highestMoveValueSoFar = Integer.MIN_VALUE;
 		Move proposedMove = new Move();
 
 		// among all moves, find the move with the highest value
 		for (Move aMove : movesWithValues) {
-			if (aMove.getMoveValue() > highestMoveValueSoFar) { // if two moves
+			System.out.println(aMove.getMoveValue());
+			if (aMove.getMoveValue() >= highestMoveValueSoFar) { // if two moves
 																// have the same
 																// value, we
 																// take the
-																// first one we
+																// last one we
 																// encounter
 				highestMoveValueSoFar = aMove.getMoveValue();
 				proposedMove.setMoveString(aMove.getMoveString());
@@ -436,7 +437,7 @@ public class HeuristicStrategy implements MoveStrategy {
 				// proposedMove will be a legal move
 			}
 		}
-
+		
 		return proposedMove;
 	}
 }
