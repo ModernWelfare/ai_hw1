@@ -303,14 +303,14 @@ public class HeuristicStrategy implements MoveStrategy {
 
 	/**
 	 * Another heuristic: determines preferability of a board using the number
-	 * of tokens closer to the centre of the board; the number is reduced based
-	 * on the number of opponent tokens closer to the centre of the board
+	 * of tokens closer to the center of the board; the number is reduced based
+	 * on the number of opponent tokens closer to the center of the board
 	 */
-	public int evaluateBoardUsingCentreOfMass(Board gameBoard,
+	public int evaluateBoardUsingCenterOfMass(Board gameBoard,
 			int NConnections, int playerNum) {
 		int width = gameBoard.width; // for connect4, this is 7
 		int height = gameBoard.height; // for connect4, this is 6
-		int centre = (width / 2); // for connect4, this is 4
+		int center = (width / 2); // for connect4, this is 4
 
 		int opponentNum = 3 - playerNum;
 		int opponentScore = 0;
@@ -319,9 +319,9 @@ public class HeuristicStrategy implements MoveStrategy {
 		for (int i = 0; i < height; i++) {
 			for (int j = 0; j < width; j++) {
 				if (gameBoard.board[i][j] == playerNum) {
-					ourScore += centre - Math.abs(j - centre);
+					ourScore += center - Math.abs(j - center);
 				} else if (gameBoard.board[i][j] == opponentNum) {
-					opponentScore += centre - Math.abs(j - centre);
+					opponentScore += center - Math.abs(j - center);
 				} else{//empty
 					ourScore += 0;
 				}
