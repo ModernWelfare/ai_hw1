@@ -200,7 +200,7 @@ public class HeuristicStrategy implements MoveStrategy {
 		int countOfTokensEncountered = 0;
 
 		for (int i = 0; i < gameBoard.height; i++) {
-			for (int j = 0; j < gameBoard.width; i++) {
+			for (int j = 0; j < gameBoard.width; j++) {
 				if (gameBoard.board[i][j] == playerNum) {// check only our
 															// tokens;
 					// ignore the opponent's
@@ -253,7 +253,7 @@ public class HeuristicStrategy implements MoveStrategy {
 			
 			//normalize scores
 			if(ourScores[i - 2] > 0) ourScores[i - 2] = 1;
-			else if(ourScores[1 - 2] < 0) ourScores[i - 2] = -1;
+			else if(ourScores[i - 2] < 0) ourScores[i - 2] = -1;
 			else ourScores[i - 2] = 0;
 			
 			ourTotalScore += ourScores[i - 2];
@@ -265,7 +265,7 @@ public class HeuristicStrategy implements MoveStrategy {
 			
 			//normalize scores
 			if(opponentScores[i - 2] > 0) opponentScores[i - 2] = 1;
-			else if(opponentScores[1 - 2] < 0) opponentScores[i - 2] = -1;
+			else if(opponentScores[i - 2] < 0) opponentScores[i - 2] = -1;
 			else opponentScores[i - 2] = 0;
 			
 			opponentTotalScore += opponentScores[i - 2];
