@@ -49,13 +49,11 @@ public class Player {
 		Move moveToTake = new Move("0 0", 999);
 		MakeMoveThread mmt = new MakeMoveThread(gameBoard, new Player(
 				playerNumber, timeLimit));
-		// TODO: hook to bestMoveToMake() inside MakeMoveThread, in expires()
-		// inside if(result == null)
 		TimedTaskExecuter.execute(mmt, (timeLimit - 1) * 1000);
 		try {
 			Thread.sleep((timeLimit - 1) * 1000 + 500);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
+			// Auto-generated catch block
 			e.printStackTrace();
 		}
 		moveToTake = mmt.result;
