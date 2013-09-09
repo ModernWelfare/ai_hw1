@@ -40,3 +40,16 @@ centre of the board. The higher the number of tokens that are closer to the cent
 the board, the higher the board is rated.
 
 It then calculates the board value for the opponent as well, and returns the difference.
+
+Predictions:
+We expected the evaluateBoard() function to perform the best as the heuristic. This is because 
+this heuristic comprehensively evaluates the board in all directions for all connections. This 
+would represent the best chance of winning at each state of the board.
+
+We expected the evaluateBoardUsingCentreOfMass() to perform the second best, since it is considered 
+good strategy in adverserial games to dominate the centre of the board. However, this function had the 
+disadvantage of not checking for connections between tokens.
+
+We expected the evaluateBoardOnlyForWins() to perform the worst, since it does not weigh 
+boards differently unless the winning condition is achieved.
+
