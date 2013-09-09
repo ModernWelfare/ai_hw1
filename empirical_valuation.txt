@@ -34,9 +34,9 @@ This is obviously not a very intelligent heuristic, since in a game of connect4,
 a board with 2 connected tokens would score the same as a board with 3 connected tokens:
 where we know that 3 connected tokens is a better situation to be in.
 
-3) evaluateBoardUsingCentreOfMass()
+3) evaluateBoardUsingCenterOfMass()
 This function evaluates the board based on the number of tokens that are closer to the 
-centre of the board. The higher the number of tokens that are closer to the centre of
+center of the board. The higher the number of tokens that are closer to the center of
 the board, the higher the board is rated.
 
 It then calculates the board value for the opponent as well, and returns the difference.
@@ -46,10 +46,27 @@ We expected the evaluateBoard() function to perform the best as the heuristic. T
 this heuristic comprehensively evaluates the board in all directions for all connections. This 
 would represent the best chance of winning at each state of the board.
 
-We expected the evaluateBoardUsingCentreOfMass() to perform the second best, since it is considered 
-good strategy in adverserial games to dominate the centre of the board. However, this function had the 
-disadvantage of not checking for connections between tokens.
+We expected the evaluateBoardUsingCenterOfMass() to perform the second best, since it is considered 
+good strategy in adverserial games to dominate the center of the board. However, this function had the 
+disadvantage of not checking for connections between tokens. Thus, it also ignores any opponent tokens 
+that may be interrupting the formation of a connection.
 
 We expected the evaluateBoardOnlyForWins() to perform the worst, since it does not weigh 
 boards differently unless the winning condition is achieved.
 
+Experiment Observations:
+There were two experimental setups: one where minimax (with alpha-beta pruning) was used and the heuristic 
+was a fallback (as defined in the hw problem); and the other where we removed the call to minimax and 
+simply called the heuristic function. The second setup was used to directly compare the heuristics with one 
+another without any efficiency that the minimax algorithm would generate.
+
+In both setups, we played players using each of the heuristics against each other.
+
+It was observed that in all cases, the predicted results were generally true over a set of games. While there 
+were a couple of games in the cases where the predicted result was false, these were a small enough subset 
+so as to be attributed to chance.
+
+While running the game, it was observed that evaluateBoard() significantly out-performs the other two 
+heuristics when it came to making the most sensible move in the overall context of the game. The other 
+two heuristics generate moves that effectively ignore the existence of another player on the board, since 
+they do not check for connections between tokens on each move.
