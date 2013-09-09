@@ -17,6 +17,7 @@ import Util.Connect4Exception;
 
 /**
  * @author bli
+ * @author tnarayan
  * 
  */
 public class Connector {
@@ -41,7 +42,8 @@ public class Connector {
 		System.out.println("tnarayan_bli");
 
 		// read game configuration
-		String gameConfigString = input.readLine();
+		String gameConfigString = input.readLine(); //referee outputs player names to us, read and discard
+		gameConfigString = input.readLine(); //read game configuration
 		String[] gameConfig = gameConfigString.split(" ");
 		height = Integer.parseInt(gameConfig[0]);
 		width = Integer.parseInt(gameConfig[1]);
@@ -61,19 +63,15 @@ public class Connector {
 
 		while (true) {
 			if (myTurn) {
-				// TODO: use a mechanism for timeout(threads, java.util.Timer,
-				// ..)
-
 				// call alpha-beta algorithm to get the move
-
 				// send move
 				move = us.getMove(gameBoard);
 				// print the move to be read by the adversary
 				try {
 					us.makeMove(move, us.playerNumber, gameBoard);
-					gameBoard.printBoard();
+				//	gameBoard.printBoard();
 				} catch (Connect4Exception e) {
-					System.out.println("We lost!");
+				//	System.out.println("We lost!");
 				}
 				System.out.println(move);
 			} else {
@@ -84,15 +82,15 @@ public class Connector {
 
 				// check for end
 				if (move_param.length == 1) {
-					System.out.println("game over!");
+				//	System.out.println("game over!");
 					break;
 				} else {
 					try {
 						adversary.makeMove(move, adversary.playerNumber,
 								gameBoard);
-						gameBoard.printBoard();
+					//	gameBoard.printBoard();
 					} catch (Connect4Exception e) {
-						System.out.println("opponent lost!");
+					//	System.out.println("opponent lost!");
 					}
 				}
 			}
