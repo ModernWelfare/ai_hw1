@@ -310,7 +310,7 @@ public class HeuristicStrategy implements MoveStrategy {
 			int NConnections, int playerNum) {
 		int width = gameBoard.width; // for connect4, this is 7
 		int height = gameBoard.height; // for connect4, this is 6
-		int centre = (width / 2) + 1; // for connect4, this is 4
+		int centre = (width / 2); // for connect4, this is 4
 
 		int opponentNum = 3 - playerNum;
 		int opponentScore = 0;
@@ -322,6 +322,8 @@ public class HeuristicStrategy implements MoveStrategy {
 					ourScore += centre - Math.abs(j - centre);
 				} else if (gameBoard.board[i][j] == opponentNum) {
 					opponentScore += centre - Math.abs(j - centre);
+				} else{//empty
+					ourScore += 0;
 				}
 			}
 		}
@@ -391,19 +393,21 @@ public class HeuristicStrategy implements MoveStrategy {
 			// reinitialize each time so that each potential move is made on a
 			// copy of the unaltered game board
 			tempBoard = gameBoard.getDuplicate();
-
 			try {
 				// for a proposed move, make the move on a copy of the board
 				// if move is not valid, a Connect4Exception will be thrown
 				// if move is valid, the move will be made on the copy of the
 				// game board
 				currentPlayer.makeMove(aMove, playerNum, tempBoard);
-
+				
 				// and evaluate the board value using heuristic function
 				// since the move is already made, we don't have to worry about
 				// whether it was a drop in or a pop out
 				boardValue = evaluateBoard(tempBoard, NConnections, playerNum);
 
+				//reinitialize object
+				theMove = new Move();
+				
 				// store the move string in the move's moveString variable
 				theMove.setMoveString(aMove);
 
@@ -417,13 +421,16 @@ public class HeuristicStrategy implements MoveStrategy {
 				// the potential move was illegal; ignore it
 			}
 		}
-
+		
 		int highestMoveValueSoFar = Integer.MIN_VALUE;
 		Move proposedMove = new Move();
-
+		
+		//Note: the referee will terminate the game if a player wins
+		//so the heuristic should never even have to determine a move
+		//on a board that already has a connection of N tokens
+		
 		// among all moves, find the move with the highest value
 		for (Move aMove : movesWithValues) {
-			System.out.println(aMove.getMoveValue());
 			if (aMove.getMoveValue() >= highestMoveValueSoFar) { // if two moves
 																// have the same
 																// value, we
