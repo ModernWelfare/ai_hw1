@@ -99,7 +99,6 @@ public class AbMinimaxStrategy extends MoveStrategyImpl implements MoveStrategy 
 
 		// if the game is over with a connection
 		if (terminalTestValue != -1) {
-			// System.out.println(terminalTestValue);
 			bestValueOfMove = (terminalTestValue == playerNumber) ? 2 : 0;
 			bestMove = new Move("0 0", bestValueOfMove);
 		} else if (stepsLeft == 0) {
@@ -110,7 +109,6 @@ public class AbMinimaxStrategy extends MoveStrategyImpl implements MoveStrategy 
 					moveOfMin = abMinMove(
 							result(move, gameBoard, playerNumber),
 							stepsLeft - 1, alpha, beta);
-					// System.out.println(moveOfMin.moveValue);
 					if (moveOfMin.moveValue > bestMove.moveValue) {
 						bestMove.moveString = move;
 						bestMove.moveValue = moveOfMin.moveValue;
@@ -124,9 +122,6 @@ public class AbMinimaxStrategy extends MoveStrategyImpl implements MoveStrategy 
 				alpha = Math.max(bestMove.moveValue, alpha);
 			}
 		}
-		// gameBoard.printBoard();
-		// System.out.println("Bestmove" + bestMove.moveValue);
-		// System.out.println("Bestmove" + bestMove.moveString);
 		return bestMove;
 	}
 }

@@ -61,13 +61,6 @@ public class HeuristicStrategy implements MoveStrategy {
 			throws Connect4Exception {
 		Board newBoard = gameBoard.getDuplicate();
 		currentPlayer.makeMove(move, playerNum, newBoard);
-		// for (Board checkedBoard : checkedBoards) {
-		// if (checkedBoard.equals(newBoard)) {
-		// throw new Connect4Exception(
-		// "Board already checked for the player");
-		// }
-		// }
-		// checkedBoards.add(newBoard);
 		return newBoard;
 	}
 
@@ -251,8 +244,6 @@ public class HeuristicStrategy implements MoveStrategy {
 		int opponentPlayerNum = 3 - playerNum;
 
 		for (int i = 2; i <= NConnections; i++) {
-			// int ourScoreThreesInARow = evaluateTokensInARow(3, playerNum,
-			// gameBoard) * 1000;
 			ourScores[i - 2] = evaluateTokensInARow(i, playerNum, gameBoard)
 					* i;
 			
@@ -310,12 +301,17 @@ public class HeuristicStrategy implements MoveStrategy {
 	 * Another heuristic: determines preferability of a board using the number
 	 * of tokens closer to the center of the board; the number is reduced based
 	 * on the number of opponent tokens closer to the center of the board
+	 * 
+	 * The idea of the algorithm was obtained from Jenny Lam's paper on 
+	 * "Heuristics in the game of Connect-K" 
+	 * (http://www.ics.uci.edu/~jlam2/connectk.pdf). Code written by us.
+	 * 
 	 */
 	public int evaluateBoardUsingCenterOfMass(Board gameBoard,
 			int NConnections, int playerNum) {
-		int width = gameBoard.width; // for connect4, this is 7
-		int height = gameBoard.height; // for connect4, this is 6
-		int center = (width / 2); // for connect4, this is 4
+		int width = gameBoard.width;
+		int height = gameBoard.height;
+		int center = (width / 2);
 
 		int opponentNum = 3 - playerNum;
 		int opponentScore = 0;
@@ -333,46 +329,18 @@ public class HeuristicStrategy implements MoveStrategy {
 			}
 		}
 		/*
-		 * for connect4: columns -> weight 1 -> 1 2 -> 2 3 -> 3 4 -> 4 5 -> 3 6
-		 * -> 2 7 -> 1
+		 * for connect4: 
+		 * columns -> weight 
+		 * 1 -> 1 
+		 * 2 -> 2 
+		 * 3 -> 3 
+		 * 4 -> 4 
+		 * 5 -> 3 
+		 * 6 -> 2 
+		 * 7 -> 1
 		 */
 		return ourScore - opponentScore;
 	}
-
-	/*
-	 * A fourth heuristic (currently evaluates a proposedMove as opposed to a
-	 * board's state after making the move; not using for the assignment)
-	 * 
-	 * public int evaluateBoardAndMoveUsingEightPattern(Board gameBoard, int
-	 * NConnections, int playerNum, Move proposedMove){ String
-	 * proposedMoveString = proposedMove.getMoveString(); String[] moveData =
-	 * proposedMoveString.split(" "); int moveNum =
-	 * Integer.parseInt(moveData[0]);
-	 * 
-	 * int height = gameBoard.height; int proposedMoveColumn = moveNum; int
-	 * proposedMoveRow;
-	 * 
-	 * int opponentNum = 3 - playerNum;
-	 * 
-	 * int preferabilityCount = 0;
-	 * 
-	 * for(int i = 0; i < height; i++){
-	 * if(gameBoard.board[i][proposedMoveColumn] == gameBoard.emptyCell){
-	 * //first empty spot in the column proposedMoveRow = i; break; } }
-	 * 
-	 * //now check the 8 spots around this (x, y) coordinate pair //if our
-	 * tokens are present, the move is more favorable //if opponent's tokens are
-	 * present, the move is less favorable //if all spaces are empty, the move
-	 * is okay //the 8 spots around the coordinate pair may not all exist
-	 * for(int i = proposedMoveRow - 1, j = proposedMoveColumn - 1; (i <
-	 * proposedMoveRow + 1) && (j < proposedMoveColumn + 1); i++, j++){ if(i ==
-	 * proposedMoveRow && j == proposedMoveColumn){ //do not compare against
-	 * yourself! continue; } else{ if(gameBoard.board[i][j] == playerNum)
-	 * preferabilityCount += 2; else if(gameBoard.board[i][j] ==
-	 * gameBoard.emptyCell) preferabilityCount += 1; else preferabilityCount +=
-	 * 0; //opponent's token; doesn't affect preferability } } return
-	 * preferabilityCount; }
-	 */
 	
 	/**
 	 * returns the best move (a Move object) that the player (identified by

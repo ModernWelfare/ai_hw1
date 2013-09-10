@@ -27,15 +27,12 @@ public class MockPlayer extends Player {
 
 	public MockPlayer(int playerNumber, int timeLimit) {
 		super(playerNumber, timeLimit);
-		// TODO Auto-generated constructor stub
+		// Auto-generated constructor stub
 	}
 
 	public void setStrategy(MoveStrategy testStrategy) {
 		this.testStrategy = testStrategy;
 	}
-
-	// List<Board> minGameBoards;
-	// List<Board> maxGameBoards;
 
 	/**
 	 * Function to get a valid move. It uses a limited amount of time to execute

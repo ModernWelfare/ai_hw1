@@ -22,7 +22,7 @@ public class MinimaxStrategy extends MoveStrategyImpl implements MoveStrategy {
 
 	public MinimaxStrategy(Board gameBoard, Player currentPlayer) {
 		super(gameBoard, currentPlayer);
-		// TODO Auto-generated constructor stub
+		// Auto-generated constructor stub
 	}
 
 	@Override
@@ -101,7 +101,6 @@ public class MinimaxStrategy extends MoveStrategyImpl implements MoveStrategy {
 
 		// if the game is over with a connection
 		if (terminalTestValue != -1) {
-			// System.out.println(terminalTestValue);
 			bestValueOfMove = (terminalTestValue == playerNumber) ? 2 : 0;
 			bestMove = new Move("0 0", bestValueOfMove);
 		} else if (stepsLeft == 0) {

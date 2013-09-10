@@ -33,7 +33,6 @@ public class MakeMoveThread implements TimedRunnable {
 			MoveStrategy currentStrategy = new HeuristicStrategy(gameBoard,
 					currentPlayer);
 			result = currentStrategy.proposeMove();
-			// result = new Move("9 9", 1000);
 		}
 	}
 }

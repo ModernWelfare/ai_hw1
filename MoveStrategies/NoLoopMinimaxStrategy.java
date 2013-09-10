@@ -110,7 +110,6 @@ public class NoLoopMinimaxStrategy extends AbMinimaxStrategy implements
 
 		// if the game is over with a connection
 		if (terminalTestValue != -1) {
-			// System.out.println(terminalTestValue);
 			bestValueOfMove = (terminalTestValue == playerNumber) ? 2 : 0;
 			bestMove = new Move("0 0", bestValueOfMove);
 		} else {

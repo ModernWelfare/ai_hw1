@@ -59,7 +59,6 @@ public class Connector {
 
 		// Initialize the board and the player according to the config
 		gameBoard = new Board(height, width, numToWin);
-		// gameBoard.printBoard();
 
 		myTurn = (playerNumber == 1) ? true : false;
 
@@ -75,9 +74,7 @@ public class Connector {
 				// print the move to be read by the adversary
 				try {
 					us.makeMove(move, us.playerNumber, gameBoard);
-				//	gameBoard.printBoard();
 				} catch (Connect4Exception e) {
-				//	System.out.println("We lost!");
 				}
 				System.out.println(move);
 			} else {
@@ -87,22 +84,18 @@ public class Connector {
 				String[] move_param = move.split(" ");
 
 				// check for end
-				if (move_param.length == 1) {
-				//	System.out.println("game over!");
+				if (move_param.length == 1) { //game over
 					break;
 				} else {
 					try {
 						adversary.makeMove(move, adversary.playerNumber,
 								gameBoard);
-					//	gameBoard.printBoard();
-					} catch (Connect4Exception e) {
-					//	System.out.println("opponent lost!");
+					} catch (Connect4Exception e) { //opponent lost
 					}
 				}
 			}
 			// switch turns
 			myTurn = !myTurn;
-			// gameBoard.printBoard();
 		}
 	}
 }

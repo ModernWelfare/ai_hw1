@@ -24,9 +24,6 @@ public class Player {
 	int timeLimit;
 	int DEPTH;
 
-	// List<Board> minGameBoards;
-	// List<Board> maxGameBoards;
-
 	/**
 	 * Constructor for the player
 	 * 
