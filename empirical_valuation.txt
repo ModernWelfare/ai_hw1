@@ -1,3 +1,7 @@
+Team:
+Bohao Li: bli@wpi.edu
+Tushar Narayan: tnarayan@wpi.edu
+
 Empirical valuation experiment:
 
 We decided to compare different heuristic evaluations for the purposes of our experiment.
@@ -19,8 +23,6 @@ board score, we weigh the score by multiplying it with 'i'.
 We carry out the same process for the opponent player, and then subtract that value
 from the board value for our player.
 
-This is the heuristic we use if minimax is taking too long.
-
 2)evaluateBoardForOnlyWins()
 This function is a simplified version of evaluateBoard(). Instead of checking the number
 of connections from 2 to N, it checks the number of connections for just N (the winning
@@ -33,6 +35,8 @@ normalize the values.
 This is obviously not a very intelligent heuristic, since in a game of connect4, 
 a board with 2 connected tokens would score the same as a board with 3 connected tokens:
 where we know that 3 connected tokens is a better situation to be in.
+
+This is the heuristic we use if minimax is taking too long.
 
 3) evaluateBoardUsingCenterOfMass()
 This function evaluates the board based on the number of tokens that are closer to the 
@@ -79,5 +83,5 @@ time from the minimax algorithm and given it to the heuristic, but that would ha
 problem down the road. Instead, we decided to use the less precise, but more certain to complete in 
 2 seconds, heuristic function (namely, evaluateBoardUsingCenterOfMass()).
 
-Interestingly, when running our player against itself, the minimax and heuristic combined result in an 
-infinite game; in other words, they force a draw.
+(Interestingly, when running our player against itself, the minimax and heuristic combined result in an 
+infinite game; in other words, they force a draw.)
