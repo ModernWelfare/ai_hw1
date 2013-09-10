@@ -339,11 +339,10 @@ public class HeuristicStrategy implements MoveStrategy {
 		return ourScore - opponentScore;
 	}
 
-	/**
-	 * A fourth heuristic Currently evaluates a proposedMove as opposed to a
-	 * board's state after making the move
-	 */
 	/*
+	 * A fourth heuristic (currently evaluates a proposedMove as opposed to a
+	 * board's state after making the move; not using for the assignment)
+	 * 
 	 * public int evaluateBoardAndMoveUsingEightPattern(Board gameBoard, int
 	 * NConnections, int playerNum, Move proposedMove){ String
 	 * proposedMoveString = proposedMove.getMoveString(); String[] moveData =
@@ -374,6 +373,7 @@ public class HeuristicStrategy implements MoveStrategy {
 	 * 0; //opponent's token; doesn't affect preferability } } return
 	 * preferabilityCount; }
 	 */
+	
 	/**
 	 * returns the best move (a Move object) that the player (identified by
 	 * playerNum) should make
