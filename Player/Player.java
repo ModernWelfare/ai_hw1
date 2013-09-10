@@ -49,9 +49,9 @@ public class Player {
 		Move moveToTake = new Move("0 0", 999);
 		MakeMoveThread mmt = new MakeMoveThread(gameBoard, new Player(
 				playerNumber, timeLimit));
-		TimedTaskExecuter.execute(mmt, (timeLimit - 1) * 1000);
+		TimedTaskExecuter.execute(mmt, (timeLimit - 2) * 1000);
 		try {
-			Thread.sleep((timeLimit - 1) * 1000 + 500);
+			Thread.sleep((timeLimit - 2) * 1000 + 500);
 		} catch (InterruptedException e) {
 			// Auto-generated catch block
 			e.printStackTrace();

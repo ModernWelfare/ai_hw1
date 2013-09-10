@@ -278,7 +278,7 @@ public class HeuristicStrategy implements MoveStrategy {
 			return ourTotalScore - opponentTotalScore;
 		}
 	}
-
+	
 	/**
 	 * Simplified version of evaluateBoard(); checks only for N connections (as
 	 * opposed to 2, 3, ...., N connections in evaluateBoard())
@@ -403,7 +403,7 @@ public class HeuristicStrategy implements MoveStrategy {
 				// and evaluate the board value using heuristic function
 				// since the move is already made, we don't have to worry about
 				// whether it was a drop in or a pop out
-				boardValue = evaluateBoard(tempBoard, NConnections, playerNum);
+				boardValue = evaluateBoardUsingCenterOfMass(tempBoard, NConnections, playerNum);
 
 				//reinitialize object
 				theMove = new Move();

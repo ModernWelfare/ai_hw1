@@ -66,7 +66,7 @@ It was observed that in all cases, the predicted results were generally true ove
 were a couple of games in the cases where the predicted result was false, these were a small enough subset 
 so as to be attributed to chance.
 
-While running the game, it was observed that evaluateBoard() significantly out-performs the other two 
+While running the game, it was observed that evaluateBoard() out-performs the other two 
 heuristics when it came to making the most sensible move in the overall context of the game. The other 
 two heuristics generate moves that effectively ignore the existence of another player on the board, since 
 they do not check for connections between tokens on each move.
@@ -76,8 +76,8 @@ in certain cases, the heuristic evaluateBoard() did not return in the specified 
 is because of the fact that it traverses the game board multiple times while looking for connections in 
 four directions - and this traversal takes time if the board is larger than some n. We could have taken more 
 time from the minimax algorithm and given it to the heuristic, but that would have basically just punted the 
-problem down the road. Instead, we decided to use the less precise, but certain to complete in a second, 
-heuristic function (namely, evaluateBoardUsingCenterOfMass()).
+problem down the road. Instead, we decided to use the less precise, but more certain to complete in 
+2 seconds, heuristic function (namely, evaluateBoardUsingCenterOfMass()).
 
 Interestingly, when running our player against itself, the minimax and heuristic combined result in an 
 infinite game; in other words, they force a draw.
